@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Hello World!</h1>
+
+We are using node
+<script>document.write(process.versions.node)</script>
+,
+Chrome
+<script>document.write(process.versions.chrome)</script>
+,
+and Electron
+<script>document.write(process.versions.electron)</script>
+.
+
+
+
+
+<div>
+    <input type="text" id="message" name="" value="">
+    <br/>
+    <button type="button" id="button" name="button">click me</button>
+</div>
+
+
+
+<script type="text/javascript">
+    console.log('process: ', process);
+</script>
+
+<script>
+    // You can also require other files to run in this process
+    // require('./renderer.js')
+</script>
+
+
+<script type="text/javascript">
+    // ...
+
+    // 添加下面的代码。
+    // 引入 ipcRenderer 模块。
+    const ipcRenderer = require('electron').ipcRenderer;
+    
+    document.getElementById('button').onclick = function () {
+        const message = document.getElementById('message').value;
+        
+        // 使用 ipcRenderer.send 向主进程发送消息。
+        ipcRenderer.send('asynchronous-message', message);
+    }
+
+    // 监听主进程返回的消息
+    ipcRenderer.on('asynchronous-reply', function (event, arg) {
+        alert(arg);
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+    "name": "electron-learning",
+    "version": "1.0.0",
+    "description": "Learning demo for electron and nodejs",
+    "main": "main.js",
+    "scripts": {
+        "start": "./node_modules/.bin/electron .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jinwyp/electron-learning.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jinwyp/electron-learning/issues"
+    },
+    "homepage": "https://github.com/jinwyp/electron-learning#readme",
+    "devDependencies": {
+        "electron": "^3.0.6"
+    }
+}
