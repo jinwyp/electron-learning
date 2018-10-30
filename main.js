@@ -1,7 +1,7 @@
 const path = require('path')
 const { app, BrowserWindow, ipcMain } = require('electron')
 
-const indexPath = path.join(__dirname, 'ui/index.html')
+const indexPath = path.join(__dirname, 'index.html')
 
 console.log('indexPath: ', indexPath)
 
