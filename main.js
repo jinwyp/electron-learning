@@ -1,5 +1,5 @@
 const path = require('path')
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 
 const indexPath = path.join(__dirname, 'ui/index.html')
 
@@ -58,3 +58,15 @@ app.on('activate', () => {
 
 // 在这个文件中，你可以续写应用剩下主进程代码。
 // 也可以拆分成几个文件，然后用 require 导入。
+
+
+
+// 监听渲染进程发送的消息
+ipcMain.on('asynchronous-message', (event, arg) => {
+    const reply = arg.split('').reverse().join('');
+    console.log('main.js reply: ', reply);
+    
+    // 发送消息到渲染进程
+    event.sender.send('asynchronous-reply', reply);
+});
+

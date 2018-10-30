@@ -55,6 +55,8 @@ and Electron
     // 监听主进程返回的消息
     ipcRenderer.on('asynchronous-reply', function (event, arg) {
         alert(arg);
+
+        console.log('index.html reply: ', arg);
     });
 </script>
 
