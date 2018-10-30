@@ -165,3 +165,6 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
+
+#Electron-builder output
+/dist_electron

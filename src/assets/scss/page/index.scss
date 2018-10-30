@@ -1,0 +1,40 @@
+
+body {
+    
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    cursor: default;
+    -webkit-overflow-scrolling:touch;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+
+.unselect {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select: none;
+
+    /* 以下两个属性目前并未支持，写在这里为了减少风险 */
+    -o-user-select: none;
+    user-select: none;
+}
+
+
+
+#app {
+    text-align: center;
+}
+
+
+.container {
+    padding: 10px 3px;
+    
+    .el-main {
+        overflow: hidden;
+    }
+}
+
+
+.cool {
+    color: red;
+}

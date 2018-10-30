@@ -6,8 +6,9 @@ Learning demo for electron and nodejs
 ### 安装环境 
 
 1. 运行 npm install
+2. 运行 npm install -g @vue/cli
 
-2. 运行 npm start 开启程序.
+3. 运行 npm run electron:serve  开启程序.
 
 
 

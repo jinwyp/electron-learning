@@ -3,6 +3,10 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 
 const indexPath = path.join(__dirname, 'index.html')
 
+import {enableLiveReload} from 'electron-compile';
+
+enableLiveReload();
+
 console.log('indexPath: ', indexPath)
 
 // Keep a global reference of the window object, if you don't, the window will
