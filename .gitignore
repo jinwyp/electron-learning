@@ -168,3 +168,4 @@ fabric.properties
 
 #Electron-builder output
 /dist_electron
+
