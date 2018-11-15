@@ -11,6 +11,7 @@ Learning demo for electron and nodejs
 3. 运行 npm run electron:serve  开启程序.
 
 
+4. 安装 youtube-dl , 运行 brew install youtube-dl 
 
 
 ### 快速入门 教程
