@@ -10,16 +10,18 @@ import Router from 'vue-router'
 // const About = () => import('../../components/cmsAdmin/subpages/About.vue'), /* webpackChunkName: "about" */
 
 
-import Home from './pages/Home.vue'
-import About from './pages/About.vue'
+import Page404 from './pages/Page404.vue'
+import VideoList from './pages/VideoList.vue'
+import SingleVideoInput from './pages/SingleVideoInput.vue'
 
 Vue.use(Router)
 
 
 const routes = [
-    { path: '/', name: 'home', component: Home},
-    { path: '/about', name: 'about', component: About},
-    { path: '/PageNotFound404',  name: 'pageNotFound',  component: About, meta : { title : '页面未找到' } },
+    { path: '/videos', name: 'videoList', component: VideoList, meta : { title : '视频列表' }},
+    { path: '/videos/create', name: 'createNewVideo', component: SingleVideoInput, meta : { title : '新增视频' }},
+    { path: '/PageNotFound404',  name: 'pageNotFound',  component: Page404, meta : { title : '页面未找到' } },
+    { path: '/',  redirect: '/videos' },
     { path: '*',  redirect: '/PageNotFound404' },
 ]
 

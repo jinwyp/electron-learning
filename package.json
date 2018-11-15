@@ -12,6 +12,12 @@
   },
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.11",
+    "cheerio": "^1.0.0-rc.2",
+    "mkdirp": "^0.5.1",
+    "pouchdb": "^7.0.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
+    "video.js": "^7.3.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1"
   },
