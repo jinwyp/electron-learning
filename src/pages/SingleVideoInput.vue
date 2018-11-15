@@ -14,6 +14,7 @@
             </b-form-group>
             
             <b-button type="submit" variant="primary">下载视频</b-button>
+            <b-button type="reset" variant="danger">重置</b-button>
         </b-form>
         
         
@@ -32,6 +33,7 @@
 <script>
     
 import { downloadVideo } from '../services/youtube/youtube-dl'
+import db from '../database/index'
 
 export default {
     data () {
@@ -51,6 +53,14 @@ export default {
             }
         }
     },
+    created: function () {
+        // `this` points to the vm instance
+        console.log('Vue Component created: ')
+        db.videos.allDocs({include_docs: true}).then(function (info) {
+            console.log(info);
+        })
+        
+    },
     methods: {
         onSubmit (evt) {
             evt.preventDefault();
@@ -62,19 +72,33 @@ export default {
 
             console.log(tempVideoIdIndex, tempVideoId)
             
-            downloadVideo(this.formData.videoUrl, this.downloadSavePath + '/' + tempVideoId, this.youtubeDlOptions).then( (result) => {
-                this.downloadLog = result.message;
-                this.downloadError = result.error;
-                console.log("result: ", result)
-            })
+            if (this.formData.videoUrl) {
+                db.videos.put({
+                    _id: tempVideoId,
+                    title: '',
+                    url: this.formData.videoUrl,
+                }).then(function (info) {
+                    console.log(info);
+                })
+            }
+           
+            
+            // downloadVideo(this.formData.videoUrl, this.downloadSavePath + '/' + tempVideoId, this.youtubeDlOptions).then( (result) => {
+            //     this.downloadLog = result.message;
+            //     this.downloadError = result.error;
+            //     console.log("result: ", result)
+            //
+            //   
+            //    
+            // })
         },
         onReset (evt) {
             evt.preventDefault();
             /* Reset our form values */
-            this.form.email = '';
-            this.form.name = '';
-            this.form.food = null;
-            this.form.checked = [];
+            this.form.videoUrl = '';
+            this.form.videoTitle = null;
+            this.downloadLog = []
+            this.downloadError = []
         }
     }
 }
