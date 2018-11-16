@@ -1,49 +1,111 @@
 <template>
-    <div class="container-fluid main">
 
-        <b-navbar toggleable="md" type="dark" variant="dark">
+    <el-container>
+        <el-header height="30px">
 
-            <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+            <el-row type="flex" justify="space-between">
+                <el-col :span="20" class="text-l">管理后台</el-col>
+                <el-col :span="4" >
 
-            <b-navbar-brand href="#">Youtube下载器</b-navbar-brand>
-
-            <b-collapse is-nav id="nav_collapse">
-
-                <b-navbar-nav>
-                    <b-nav-item href="#"> <router-link to="/videos">视频列表</router-link> </b-nav-item>
-                    <b-nav-item href="#"> <router-link to="/videos/create">新增视频</router-link> </b-nav-item>
-                </b-navbar-nav>
-
-                <!-- Right aligned nav items -->
-                <b-navbar-nav class="ml-auto">
-
-                    <b-nav-form>
-                        <b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search"/>
-                        <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-                    </b-nav-form>
-
-                    
-                    <b-nav-item-dropdown right>
-                        <!-- Using button-content slot -->
-                        <template slot="button-content">
-                            <em>User</em>
-                        </template>
-                        <b-dropdown-item href="#">Profile</b-dropdown-item>
-                        <b-dropdown-item href="#">Signout</b-dropdown-item>
-                    </b-nav-item-dropdown>
-                </b-navbar-nav>
-
-            </b-collapse>
-        </b-navbar>
+                    <el-dropdown class="fr">
+                        <span class="el-dropdown-link">你好  <i class="el-icon-arrow-down el-icon--right"/></span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>用户信息</el-dropdown-item>
+                            <el-dropdown-item>
+                                <a class="a-style-none" href="http://news-cms.51y5.net/index.do" target="_blank">跳转老系统</a>
+                            </el-dropdown-item>
+                            <el-dropdown-item divided>退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </el-col>
+            </el-row>
+        </el-header>
         
-        <div class="row">
-            <div class="col-sm-12">
-               <h2>{{$route.meta.title}}</h2> 
-            </div>
-            <div class="col-sm-12">
-                <router-view/>
-            </div>
-        </div>
-    </div>
+        
+        <el-container>
+            <el-aside width="200px">
+                
+                <el-menu :default-active="currentSubMenu.index" router >
+
+                    <el-submenu v-for="(menu, index) in menuList" :key="index" :index="menu.index">
+                        <template slot="title">
+                            <i :class="menu.ico"/>
+                            <span>{{ menu.name }}</span>
+                        </template>
+
+                        <el-menu-item v-for="(subMenu, subIndex) in menu.subMenu" :index="subMenu.index" :key="subIndex" @click="selectMenu(menu, subMenu)">{{ subMenu.name }}</el-menu-item>
+                    </el-submenu>
+
+                </el-menu>
+                
+            </el-aside>
+            
+            
+            <el-main>
+                <el-row>
+                    <el-col :span="24">
+                        <el-breadcrumb separator-class="el-icon-arrow-right">
+                            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                            <el-breadcrumb-item>{{ currentMenu.name }} </el-breadcrumb-item>
+                            <el-breadcrumb-item> {{ currentSubMenu.name }}</el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </el-col>
+                    
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <h2>{{ $route.meta.title }}</h2>
+                    </el-col>
+                </el-row>
+                
+                <router-view :key="$route.fullPath"/>
+            </el-main>
+        </el-container>
+    </el-container>
+  
 </template>
 
+<script>
+
+export default {
+    data () {
+        return {
+            menuList: [
+                {
+                    index: '1',
+                    name: 'youtube视频管理',
+                    ico: 'el-icon-news',
+                    subMenu: [
+                        { index: '/videos', name: '已下载视频列表' },
+                        { index: '/videos/create', name: '新增下载视频' },
+                    ],
+                },
+            ],
+            
+            currentMenu: {
+                index: '1',
+                name: 'youtube视频管理',
+                ico: 'el-icon-menu',
+                subMenu: [],
+            },
+            
+            currentSubMenu: {
+                index: '/videos',
+                name: '已下载视频列表',
+            },
+        }
+    },
+    created: function () {
+        // `this` points to the vm instance
+
+    },
+    methods: {
+        selectMenu (menu, subMenu) {
+            this.currentMenu = menu
+            this.currentSubMenu = subMenu
+        },
+
+    },
+}
+</script>

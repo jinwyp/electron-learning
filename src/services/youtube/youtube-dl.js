@@ -1,8 +1,8 @@
 import path from 'path';
 import {spawn} from 'child_process';
-import mkdirp  from 'mkdirp';
+import mkdirp from 'mkdirp';
 
-export const downloadSubtitles = ( {lang = 'enUS', filename, url, targetFolder} = {}) => {
+export const downloadSubtitles = ({lang = 'enUS', filename, url, targetFolder} = {}) => {
     return new Promise(resolve => {
         const dl = spawn(
             'youtube-dl',
@@ -26,7 +26,7 @@ export const downloadSubtitles = ( {lang = 'enUS', filename, url, targetFolder} 
         });
     });
 }
-    
+
 export const getStreamUrl = url => {
     return new Promise(resolve => {
         const dl = spawn('youtube-dl', ['-g', url]);
@@ -34,15 +34,15 @@ export const getStreamUrl = url => {
     });
 }
 
-export const downloadVideo = ( url, targetFolder, options = {}) => {
+export const downloadVideo = (url, targetFolder, options = {}) => {
     return new Promise(resolve => {
         console.log('Youtube-dl url:', url, targetFolder, path.join('./', targetFolder))
 
         mkdirp.sync(targetFolder)
-        
+
         let message = []
         let error = []
-        
+
         const dl = spawn(
             'youtube-dl',
             [
@@ -50,19 +50,19 @@ export const downloadVideo = ( url, targetFolder, options = {}) => {
                 '-v',
                 '--no-overwrites',
                 '--no-continue',
-                
+
                 '--write-sub',
-                
+
                 '--write-description',
                 '--write-info-json',
                 '--write-annotations',
                 '--write-sub',
                 '--write-thumbnail',
-                
-                
+
+
                 '--proxy',
                 options.networkOptions['--proxy'] || 'socks5://127.0.0.1:1086/',
-                
+
                 url,
             ],
             {
@@ -74,16 +74,16 @@ export const downloadVideo = ( url, targetFolder, options = {}) => {
             message.push(data.toString())
             console.log(`[Youtube-dl-downloading]: ${data}`);
         });
-        
+
         dl.stderr.on('data', data => {
             error.push(data.toString())
             console.log('[Youtube-dl-error]:', data.toString());
         })
 
-        
+
         dl.on('close', (code) => {
             console.log('[Youtube-dl-close]:', code)
             resolve({code, message, error});
         });
-    });
+    })
 }

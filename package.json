@@ -11,8 +11,8 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "bootstrap-vue": "^2.0.0-rc.11",
     "cheerio": "^1.0.0-rc.2",
+    "element-ui": "^2.4.9",
     "mkdirp": "^0.5.1",
     "pouchdb": "^7.0.0",
     "request": "^2.88.0",

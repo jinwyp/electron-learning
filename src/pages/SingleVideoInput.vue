@@ -1,31 +1,32 @@
 <template>
     <div>
-        <b-form @submit="onSubmit" @reset="onReset" novalidate>
-            <b-form-group horizontal :label-cols="1" label="视频地址:">
-                <b-form-input type="text" v-model="formData.videoUrl" required placeholder=""></b-form-input>
-            </b-form-group>
-            
-            <b-form-group horizontal :label-cols="1" label="视频标题:">
-                <b-form-input type="text" v-model="formData.videoTitle" placeholder=""></b-form-input>
-            </b-form-group>
+        <el-form ref="form" :model="formData" label-width="100px">
+            <el-form-item label="视频地址:">
+                <el-input v-model="formData.videoUrl" />
+            </el-form-item>
 
-            <b-form-group horizontal :label-cols="1" label="代理服务器:"  >
-                <b-form-input type="text" v-model="formData.socks5" placeholder="socks5://127.0.0.1:1086/"></b-form-input>
-            </b-form-group>
+            <el-form-item label="视频标题:">
+                <el-input v-model="formData.videoTitle" />
+            </el-form-item>
+
+            <el-form-item label="代理服务器:">
+                <el-input v-model="formData.socks5" placeholder="socks5://127.0.0.1:1086/" />
+            </el-form-item>
+
+            <el-button type="primary" @click="onSubmit">下载视频</el-button>
+            <el-button type="primary" @click="onReset">重置</el-button>
             
-            <b-button type="submit" variant="primary">下载视频</b-button>
-            <b-button type="reset" variant="danger">重置</b-button>
-        </b-form>
+        </el-form>
+    
         
-        
-        <div> 
-            <h4>下载日志 :</h4> 
-            <br> {{downloadLog}}
+        <div>
+            <h4>下载日志 :</h4>
+            <br> {{ downloadLog }}
         </div>
 
-        <div> 
+        <div>
             <h4>下载错误日志 :</h4>
-            <br> {{downloadError}}
+            <br> {{ downloadError }}
         </div>
     </div>
 </template>
@@ -44,31 +45,29 @@ export default {
             formData: {
                 videoUrl: '',
                 videoTitle: '',
-                socks5: ''
+                socks5: '',
             },
-            youtubeDlOptions : {
-                networkOptions : {
-                    '--proxy' : 'socks5://127.0.0.1:1086/'
-                }
-            }
+            youtubeDlOptions: {
+                networkOptions: {
+                    '--proxy': 'socks5://127.0.0.1:1086/',
+                },
+            },
         }
     },
     created: function () {
         // `this` points to the vm instance
         console.log('Vue Component created: ')
-        db.videos.allDocs({include_docs: true}).then(function (info) {
-            console.log(info);
+        db.videos.allDocs({ include_docs: true }).then(function (info) {
+            console.log(info)
         })
-        
     },
+    
     methods: {
-        onSubmit (evt) {
-            evt.preventDefault();
-
-            console.log("formData:", this.formData)
-            const tempVideoIdIndex = this.formData.videoUrl.indexOf('?v=');
+        onSubmit () {
+            console.log('formData: ', this.formData)
+            const tempVideoIdIndex = this.formData.videoUrl.indexOf('?v=')
             
-            const tempVideoId = this.formData.videoUrl.substr(tempVideoIdIndex+3, 11)
+            const tempVideoId = this.formData.videoUrl.substr(tempVideoIdIndex + 3, 11)
 
             console.log(tempVideoIdIndex, tempVideoId)
             
@@ -78,28 +77,25 @@ export default {
                     title: '',
                     url: this.formData.videoUrl,
                 }).then(function (info) {
-                    console.log(info);
+                    console.log(info)
                 })
             }
            
             
-            // downloadVideo(this.formData.videoUrl, this.downloadSavePath + '/' + tempVideoId, this.youtubeDlOptions).then( (result) => {
-            //     this.downloadLog = result.message;
-            //     this.downloadError = result.error;
-            //     console.log("result: ", result)
-            //
-            //   
-            //    
-            // })
+            downloadVideo(this.formData.videoUrl, this.downloadSavePath + '/' + tempVideoId, this.youtubeDlOptions).then((result) => {
+                this.downloadLog = result.message
+                this.downloadError = result.error
+                console.log('result: ', result)
+            })
         },
-        onReset (evt) {
-            evt.preventDefault();
+        
+        onReset () {
             /* Reset our form values */
-            this.form.videoUrl = '';
-            this.form.videoTitle = null;
+            this.formData.videoUrl = ''
+            this.formData.videoTitle = null
             this.downloadLog = []
             this.downloadError = []
-        }
-    }
+        },
+    },
 }
 </script>

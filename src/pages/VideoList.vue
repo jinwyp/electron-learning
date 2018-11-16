@@ -1,9 +1,27 @@
 <template>
-    <div >
-        <b-button type="submit" variant="primary" @click="onSubmit">搜索</b-button>
-        <b-table striped hover :items="videoList" :fields="fields">
-        </b-table>
-    </div>
+    <el-row>
+        <el-col :span="24">
+            <el-button type="primary" @click="getVideoList">搜索</el-button>
+        </el-col>
+
+        <el-col :span="24">
+
+            
+            <el-table :data="videoList" border>
+                <el-table-column prop="id" label="ID" width="150" />
+                <el-table-column prop="doc" label="标题" width="150">
+                    <template slot-scope="scope">{{ scope.row.doc.title }}</template>
+                </el-table-column>
+                <el-table-column prop="doc" label="Url" >
+                    <template slot-scope="scope">{{ scope.row.doc.url }}</template>
+                </el-table-column>
+            </el-table>
+            
+            <el-pagination :current-page.sync="pagination.pageNo" :page-size="pagination.pageSize" :pager-count="15" :total="pagination.total" background layout="total, prev, pager, next, jumper" @current-change="changePage" />
+        </el-col>
+        
+    </el-row>
+    
 </template>
 
 <script>
@@ -11,42 +29,36 @@ import db from '../database/index'
 
 export default {
     components: {},
-    data() {
+    data () {
         return {
-            fields: [
-                { key: 'id', label: 'ID', sortable: false},
-                { key: 'doc.title', label: 'Title', sortable: false},
-                { key: 'doc.url', label: 'Url', sortable: false},
-            ],
             videoList: [],
-            items: [
-                { isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-                { isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-                { isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-                { isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney' }
-            ]
-            
+            pagination: {
+                pageNo: 1,
+                pageSize: 20,
+                total: 100,
+            },
         }
     },
+    
     created: function () {
         // `this` points to the vm instance
         console.log('Vue Component created: ')
-        db.videos.allDocs({include_docs: true}).then( (result) => {
-            console.log(result);
-            this.videoList = result.rows
-            
-            console.log(this.videoList)
-        })
-
+        this.getVideoList()
     },
+    
     methods: {
-        onSubmit () {
-            console.log('------');
-            db.videos.allDocs({include_docs: true}).then( (result) => {
-                console.log(result);
+        changePage (currentPageNo) {
+            console.log('当前分页 Pagination No: ', currentPageNo)
+            this.getVideoList()
+        },
+
+        getVideoList () {
+            db.videos.allDocs({ include_docs: true }).then((result) => {
+                console.log('当前列表数据: ', result)
                 this.videoList = result.rows
+                console.log('当前列表数据: ', this.videoList)
             })
         },
-    }
+    },
 }
 </script>

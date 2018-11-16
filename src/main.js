@@ -1,21 +1,20 @@
 
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'element-ui/lib/theme-chalk/index.css';
 import './assets/scss/pages/index.scss';
 
 
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
+import ElementUI from 'element-ui';
 
 
 import App from './IndexApp.vue'
-import router from './IndexRouter'
+import router from './indexRouter'
 
 
 console.log('===== process.env : ', process.env);
 
 
-Vue.use(BootstrapVue);
+Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
