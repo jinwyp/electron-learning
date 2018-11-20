@@ -1,5 +1,4 @@
 export function formatCurrency (value) {
-
     if (typeof value === 'number') {
         const temp = (value / 1).toFixed(2).replace('.', '.')
         return temp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -10,7 +9,6 @@ export function formatCurrency (value) {
 
 
 export function formatNumber (value) {
-
     if (typeof value === 'number') {
         const temp = (value / 1).toFixed(0).replace('.', '.')
         return temp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')

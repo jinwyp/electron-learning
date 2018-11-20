@@ -33,14 +33,13 @@ export const durationBySecond = (secondInput) => {
 
 
 export const formatDateByDate = (dateInput, format = 'YYYY-M-D') => {
-    
     if (typeof dateInput === 'string') {
         if (dateInput.length === 8) {
-            const result = dayjs(new Date (dateInput.substr(0, 4), dateInput.substr(4, 2), dateInput.substr(6, 2)))
+            const result = dayjs(new Date(dateInput.substr(0, 4), dateInput.substr(4, 2), dateInput.substr(6, 2)))
 
-            return result.format(format);
+            return result.format(format)
         }
-    } 
+    }
     
     return dateInput
 }
