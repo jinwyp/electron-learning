@@ -23,13 +23,30 @@ module.exports = {
             "alignAttributesVertically": true,
             "ignores": []
         }],
+
         "vue/max-attributes-per-line": [10, {
             "singleline": 10,
             "multiline": {
                 "max": 10,
                 "allowFirstLine": true
             }
+        }],
+
+        "vue/html-self-closing": ["error", {
+            "html": {
+                "void": "never",
+                "normal": "any",
+                "component": "any"
+            },
+            "svg": "always",
+            "math": "always"
+        }],
+
+        "vue/html-closing-bracket-newline": ["error", {
+            "singleline": "never",
+            "multiline": "never"
         }]
+
     },
     parserOptions: {
         parser: 'babel-eslint'

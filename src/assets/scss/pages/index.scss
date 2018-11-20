@@ -1,11 +1,57 @@
 
+
+/* VENDOR - Default fall-backs and external files.
+========================================================================== */
+
+
+//@import "../base/_reset";
+
+//@import url("//unpkg.com/element-ui@2.4.5/lib/theme-chalk/index.css");
+
+
+
+/* BASE - Base Variable file along with starting point Mixins and Placeholders.
+========================================================================== */
+
+
+//@import "../helpers/_elementUI-variables"; // 修改elementUI css
+//@import "../helpers/_variables";
+//@import "../helpers/_mixins";
+@import "../helpers/_atom";
+
+
+//@import "../base/_typography";
+
+//@import "../helpers/_auto_sprite";
+
+
+/* FRAMEWORK - Structure and layout files.
+========================================================================== */
+
+//@import "../layout/menu";
+//@import "../layout/_header";
+
+//@import "../components/_angularLoading";
+
+//@import "../components/cmsGlobal/_cmsGlobal";
+//@import "../components/cmsAdmin/_singleElement";
+
+
+
+
+
+
+
+
+
+
 body {
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     cursor: default;
     -webkit-overflow-scrolling: touch;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    font-family: "Microsoft YaHei", "微软雅黑", "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",  Arial, sans-serif;
 }
 
 .unselect {
@@ -25,10 +71,68 @@ body {
     white-space: pre-line;
     
     h2 {
-        margin: 20px 0px;
+        margin: 10px 0px;
     }
 
     h4 {
         margin: 10px 0px;
+    }
+    
+    .el-main {
+        padding: 0px 20px;
+    }
+}
+
+
+.form-one-line-multi {
+    .el-form-item__content {
+        //width: 600px;
+        
+        .el-input {
+            width: 500px
+        }
+    }
+}
+
+
+.card-video-info {
+    .el-card__header {
+        padding: 8px 10px;
+    }
+    
+    .main-info {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        
+        .image-box {
+            width: 200px;
+            
+            img {
+                width: 100%;
+            }
+        }
+        
+        .description {
+            padding: 10px;
+            span {
+                margin-right: 15px;
+                font-size: 14px;
+            }
+        }
+        
+    }
+
+    .format-info {
+        div {
+            font-size: 13px;
+            padding: 5px;
+        }
+        
+        span {
+            display: inline;
+        }
+
     }
 }

@@ -10,30 +10,30 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
+let mainWindow = null
 
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], {secure: true})
 
 function createWindow() {
     // Create the browser window.  创建浏览器窗口。
-    win = new BrowserWindow({width: 800, height: 600})
+    mainWindow = new BrowserWindow({width: 800, height: 600})
 
     if (isDevelopment) {
         // Load the url of the dev server if in development mode
-        win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-        if (!process.env.IS_TEST) win.webContents.openDevTools()
+        mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+        if (!process.env.IS_TEST) mainWindow.webContents.openDevTools()
     } else {
         createProtocol('app')
         // Load the index.html when not in development
-        win.loadFile(pathIndex)
+        mainWindow.loadFile(pathIndex)
     }
 
-    win.on('closed', () => {
+    mainWindow.on('closed', () => {
         // 取消引用 window 对象，如果你的应用支持多窗口的话，
         // 通常会把多个 window 对象存放在一个数组里面，
         // 与此同时，你应该删除相应的元素。
-        win = null
+        mainWindow = null
     })
 }
 
@@ -53,7 +53,7 @@ app.on('activate', () => {
     // dock icon is clicked and there are no other windows open.
     // 在macOS上，当单击dock图标并且没有其他窗口打开时，
     // 通常在应用程序中重新创建一个窗口。
-    if (win === null) {
+    if (mainWindow === null) {
         createWindow()
     }
 })

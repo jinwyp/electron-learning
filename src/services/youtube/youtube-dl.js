@@ -1,38 +1,95 @@
-import path from 'path';
-import {spawn} from 'child_process';
-import mkdirp from 'mkdirp';
+import path from 'path'
+import { spawn } from 'child_process'
+import mkdirp from 'mkdirp'
 
-export const downloadSubtitles = ({lang = 'enUS', filename, url, targetFolder} = {}) => {
+
+
+const networkOptions = [
+    '--proxy',
+    'socks5://127.0.0.1:1086/',
+]
+
+const fileOptions = [
+    '--output',
+    '%(title)s.%(ext)s',
+
+    '--restrict-filenames',
+    
+    '--no-overwrites',
+    '--no-continue',
+
+    '--write-description',
+    '--write-info-json',
+    '--write-annotations',
+    
+    '--write-thumbnail',
+]
+
+const simulationOptions = [
+    '--simulate',
+    '--dump-json',
+]
+
+
+const workaroundsOptions = [
+    '--no-check-certificate',
+]
+
+// const videoOptions = [
+//     '--list-formats',
+// ]
+
+const subtitleOptions = [
+    '--write-sub',
+    '--sub-lang',
+    'enUS',
+    
+    '--output',
+    '%(title)s.%(ext)s',
+    
+]
+
+
+export const downloadSubtitles = (url, targetFolder = '', { lang = 'enUS', filename } = {}) => {
     return new Promise(resolve => {
+        if (lang) {
+            subtitleOptions[2] = lang
+        }
+        if (filename) {
+            subtitleOptions[4] = filename
+        }
+        
         const dl = spawn(
             'youtube-dl',
             [
-                '--write-sub',
-                '--sub-lang',
-                lang,
-                '-o',
-                filename,
                 '--skip-download',
+                
+                ...workaroundsOptions,
+                
+                ...subtitleOptions,
+                
                 url,
             ],
             {
-                cwd: targetFolder,
+                cwd: path.join('./', targetFolder),
             }
-        );
-        dl.stderr.on('data', data => console.log('[dl-sub]:', data.toString()));
+        )
+        dl.stderr.on('data', data => console.log('[dl-sub]:', data.toString()))
         dl.stdout.on('close', () => {
-            const subtitlesFile = filename.replace('.mp4', `.${lang}.ass`);
-            resolve(path.join(targetFolder, subtitlesFile));
-        });
-    });
+            const subtitlesFile = filename.replace('.mp4', `.${lang}.ass`)
+            resolve(path.join(targetFolder, subtitlesFile))
+        })
+    })
 }
 
 export const getStreamUrl = url => {
     return new Promise(resolve => {
-        const dl = spawn('youtube-dl', ['-g', url]);
-        dl.stdout.on('data', data => resolve(data.toString().trim()));
-    });
+        const dl = spawn('youtube-dl', ['-g', url])
+        dl.stdout.on('data', data => resolve(data.toString().trim()))
+    })
 }
+
+
 
 export const downloadVideo = (url, targetFolder, options = {}) => {
     return new Promise(resolve => {
@@ -43,47 +100,93 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
         let message = []
         let error = []
 
+        if (options.networkOptions['--proxy']) {
+            networkOptions[1] = options.networkOptions['--proxy']
+        }
         const dl = spawn(
             'youtube-dl',
             [
-                '--no-check-certificate',
-                '-v',
-                '--no-overwrites',
-                '--no-continue',
+                ...workaroundsOptions,
+                
+                ...fileOptions,
 
-                '--write-sub',
-
-                '--write-description',
-                '--write-info-json',
-                '--write-annotations',
-                '--write-sub',
-                '--write-thumbnail',
-
-
-                '--proxy',
-                options.networkOptions['--proxy'] || 'socks5://127.0.0.1:1086/',
+                ...networkOptions,
 
                 url,
             ],
             {
                 cwd: path.join('./', targetFolder),
             }
-        );
+        )
 
         dl.stdout.on('data', (data) => {
             message.push(data.toString())
-            console.log(`[Youtube-dl-downloading]: ${data}`);
-        });
+            console.log(`[Youtube-dl-downloading]: ${data}`)
+        })
 
         dl.stderr.on('data', data => {
             error.push(data.toString())
-            console.log('[Youtube-dl-error]:', data.toString());
+            console.log('[Youtube-dl-error]:', data.toString())
         })
-
 
         dl.on('close', (code) => {
             console.log('[Youtube-dl-close]:', code)
-            resolve({code, message, error});
-        });
+            resolve({ code, message, error })
+        })
+    })
+}
+
+
+
+export const getVideoInfo = (url, targetFolder, options = {}) => {
+    return new Promise(resolve => {
+        console.log('Youtube-dl url:', url, path.join('./', targetFolder))
+
+        mkdirp.sync(targetFolder)
+        
+        let message = ''
+        let error = []
+
+        if (options.networkOptions['--proxy']) {
+            networkOptions[1] = options.networkOptions['--proxy']
+        }
+        
+        const dl = spawn(
+            'youtube-dl',
+            [
+                ...workaroundsOptions,
+                ...simulationOptions,
+                
+                ...networkOptions,
+
+                url,
+            ],
+            {
+                cwd: path.join('./', targetFolder),
+            }
+        )
+
+        dl.stdout.on('data', (data) => {
+            message = message + data.toString()
+            console.log(`[Youtube-dl-downloading]: ${data}`)
+        })
+
+        dl.stderr.on('data', data => {
+            error.push(data.toString())
+            console.log('[Youtube-dl-error]:', data.toString())
+        })
+        
+        dl.on('close', (code) => {
+            console.log('[Youtube-dl-close]:', code)
+            
+            let tempObject = null
+
+            try {
+                tempObject = JSON.parse(message)
+            } catch (error) {
+                console.log('[Youtube-dl-close JSON parse error]:', error)
+            }
+            resolve({ code, message: tempObject, error })
+        })
     })
 }
