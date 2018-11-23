@@ -2,13 +2,13 @@
     <el-row>
         <el-col :span="24">
             
-            <el-form ref="form" :model="formData" label-width="100px">
+            <el-form ref="form" :model="videoForm" label-width="100px">
                 <el-form-item label="代理服务器:">
-                    <el-input v-model="formData.socks5" placeholder="socks5://127.0.0.1:1086/" />
+                    <el-input v-model="videoForm.socks5" placeholder="socks5://127.0.0.1:1086/" />
                 </el-form-item>
                 
                 <el-form-item label="视频地址:" class="form-one-line-multi">
-                    <el-input v-model="formData.videoUrl" />
+                    <el-input v-model="videoForm.videoUrl" />
                     <el-button v-loading.fullscreen.lock="isShowLoading" class="ml-20" type="primary" plain size="small" @click="onSubmit('info')">获取视频信息</el-button>
                 </el-form-item>
             </el-form>
@@ -43,14 +43,14 @@
                 </div>
 
                 <el-table :data="videoFormatList" :show-header="true" size="mini" border stripe>
-                    <el-table-column prop="ext" label="格式" width="220">
+                    <el-table-column prop="ext" label="格式" width="210">
                         <template slot-scope="scope">
                             <span v-if="scope.row.vcodec === 'none' ">Audio {{ scope.row.ext }} - {{ scope.row.format_note }}</span>
                             <span v-if="scope.row.vcodec !== 'none' ">Video {{ scope.row.format_note }} ({{ scope.row.width }}x{{ scope.row.height }}) .{{ scope.row.ext }}</span>
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="filesize" label="文件大小" sortable width="120">
+                    <el-table-column prop="filesize" label="文件大小" sortable width="110">
                         <template slot-scope="scope">
                             <span v-if="scope.row.vcodec === 'none' ">{{ scope.row.filesize | sizeDisplay }} </span>
                             <span v-if="scope.row.vcodec !== 'none' "> {{ scope.row.filesize | sizeDisplay }} </span>
@@ -59,14 +59,17 @@
 
                     <el-table-column prop="ext" label="操作" width="80">
                         <template slot-scope="scope">
-                            <el-button type="primary" plain size="mini" @click="onSubmit('download')">下载</el-button>
+                            <el-button type="primary" plain size="mini" @click="onSubmit('download', scope.row)">下载</el-button>
                         </template>
                     </el-table-column>
                     
                     <el-table-column prop="acodec" label="其他信息">
                         <template slot-scope="scope">
-                            <span v-if="scope.row.vcodec !== 'none' ">Video codec: {{ scope.row.vcodec }} <span v-show="scope.row.tbr">({{ scope.row.tbr }} Kbps) </span> <span v-show="scope.row.vbr">({{ scope.row.vbr }} Kbps) </span></span>
-                            <span v-if="scope.row.acodec !== 'none' "> - Audio codec: {{ scope.row.acodec }} <span v-show="scope.row.abr">({{ scope.row.abr }} Kbps)</span></span>
+                            <span v-if="scope.row.vcodec !== 'none' ">Video codec: {{ scope.row.vcodec }}
+                                <span v-show="scope.row.tbr">({{ scope.row.tbr }} Kbps) </span> <span v-show="scope.row.vbr">({{ scope.row.vbr }} Kbps) </span>
+                                <span v-if="scope.row.acodec !== 'none' "> - </span>
+                            </span>
+                            <span v-if="scope.row.acodec !== 'none' ">  Audio codec: {{ scope.row.acodec }} <span v-show="scope.row.abr">({{ scope.row.abr }} Kbps)</span></span>
                         </template>
                     </el-table-column>
                     
@@ -111,7 +114,7 @@ export default {
             
             downloadSavePath: 'download/youtube',
             
-            formData: {
+            videoForm: {
                 videoUrl: '',
                 videoTitle: '',
                 socks5: '',
@@ -120,6 +123,10 @@ export default {
             youtubeDlOptions: {
                 networkOptions: {
                     '--proxy': 'socks5://127.0.0.1:1086/',
+                },
+
+                videoFormatOptions: {
+                    '--format': 'bestvideo+bestaudio/best',
                 },
             },
 
@@ -132,57 +139,79 @@ export default {
         // `this` points to the vm instance
         console.log('Vue Component created: ')
         db.videos.allDocs({ include_docs: true }).then(function (info) {
-            console.log(info)
+            console.log('Video List: ', info)
         })
 
         this.getSortFormatList(this.videoInfo.formats)
     },
     
     methods: {
-        onSubmit (type) {
-            console.log('formData: ', this.formData)
+        onSubmit (type, formatData) {
+            console.log('videoForm: ', this.videoForm)
             
-            if (!this.GIsValidUrl(this.formData.videoUrl)) {
+            if (!this.GIsValidUrl(this.videoForm.videoUrl)) {
                 return
             }
             
-            this.isShowLoading = true
+            // this.isShowLoading = true
             
-            const tempVideoIdIndex = this.formData.videoUrl.indexOf('?v=')
-            const tempVideoId = this.formData.videoUrl.substr(tempVideoIdIndex + 3, 11)
+            const tempVideoIdIndex = this.videoForm.videoUrl.indexOf('?v=')
+            const tempVideoId = this.videoForm.videoUrl.substr(tempVideoIdIndex + 3, 11)
+            const savePath = this.downloadSavePath + '/' + tempVideoId
 
-            console.log(tempVideoIdIndex, tempVideoId)
 
-            db.videos.put({
-                _id: tempVideoId,
-                title: '',
-                url: this.formData.videoUrl,
-            }).then(function (info) {
-                console.log(info)
-            })
-           
+            
+            console.log('VideoId: ', tempVideoId, tempVideoIdIndex, this.youtubeDlOptions.videoFormatOptions)
+
             
             if (type === 'download') {
-                downloadVideo(this.formData.videoUrl, this.downloadSavePath + '/' + tempVideoId, this.youtubeDlOptions).then((result) => {
+                if (formatData.format_id) {
+                    this.youtubeDlOptions.videoFormatOptions['--format'] = formatData.format_id
+                }
+                
+                downloadVideo(this.videoForm.videoUrl, savePath, this.youtubeDlOptions).then((result) => {
                     this.downloadLog = result.message
                     this.downloadError = result.error
                     console.log('result: ', result)
+                    this.isShowLoading = false
                 })
             } else {
-                getVideoInfo(this.formData.videoUrl, this.downloadSavePath + '/' + tempVideoId, this.youtubeDlOptions).then((result) => {
-                    this.videoInfo = result.message
-                    this.downloadError = result.error
-                    this.isShowLoading = false
-                    console.log(this.videoInfo)
-                    this.getSortFormatList(this.videoInfo.formats)
-                })
+                db.videos.get(tempVideoId).then( (doc) => {
+                    console.log("doc: ", doc) 
+                    if (doc) {
+                        console.log("11doc: ", doc)
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+                
+                // getVideoInfo(this.videoForm.videoUrl, savePath, this.youtubeDlOptions).then((result) => {
+                //     this.videoInfo = result.message
+                //     this.downloadError = result.error
+                //     this.isShowLoading = false
+                //    
+                //    
+                //     db.videos.put({
+                //         _id: tempVideoId,
+                //         title: result.message.title,
+                //         url: this.videoForm.videoUrl,
+                //         jsonInfo: JSON.stringify(result.message),
+                //     }).then(function (info) {
+                //         console.log(info)
+                //     })
+                //
+                //
+                //     this.getSortFormatList(this.videoInfo.formats)
+                //
+                //
+                // })
             }
         },
         
         onReset () {
             /* Reset our form values */
-            this.formData.videoUrl = ''
-            this.formData.videoTitle = null
+            this.videoForm.videoUrl = ''
+            this.videoForm.videoTitle = null
             this.downloadLog = []
             this.downloadError = []
         },
@@ -190,13 +219,16 @@ export default {
         getSortFormatList (videoFormatList = []) {
             const tempAudio = []
             const tempVideo = []
+            const tempVideoWithAudio = []
             
             if (Array.isArray(videoFormatList)) {
                 videoFormatList.forEach((format) => {
                     if (format.vcodec === 'none') {
                         tempAudio.push(format)
-                    } else {
+                    } else if (format.acodec === 'none') {
                         tempVideo.push(format)
+                    } else {
+                        tempVideoWithAudio.push(format)
                     }
                 })
 
@@ -219,8 +251,22 @@ export default {
                     }
                     return a.ext < b.ext ? 1 : -1
                 })
+
+                tempVideoWithAudio.sort((a, b) => {
+                    if (typeof b.filesize === 'undefined') {
+                        return 1
+                    }
+                    
+                    if (a.ext === b.ext) {
+                        if (a.filesize === b.filesize) {
+                            return 0
+                        }
+                        return a.filesize < b.filesize ? 1 : -1
+                    }
+                    return a.ext < b.ext ? 1 : -1
+                })
                 
-                this.videoFormatList = [...tempVideo, ...tempAudio]
+                this.videoFormatList = [...tempVideoWithAudio, ...tempVideo, ...tempAudio]
             }
         },
     },

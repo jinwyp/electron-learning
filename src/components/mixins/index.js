@@ -37,7 +37,7 @@ const install = (Vue, options) => {
     Vue.mixin({
 
         methods: {
-            GIsValidUrl: validURL
+            GIsValidUrl: validURL,
         },
     })
 }

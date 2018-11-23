@@ -35,9 +35,10 @@ const workaroundsOptions = [
     '--no-check-certificate',
 ]
 
-// const videoOptions = [
-//     '--list-formats',
-// ]
+const videoFormatOptions = [
+    '--format',
+    'bestvideo+bestaudio/best',
+]
 
 const subtitleOptions = [
     '--write-sub',
@@ -103,6 +104,11 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
         if (options.networkOptions['--proxy']) {
             networkOptions[1] = options.networkOptions['--proxy']
         }
+
+        if (options.videoFormatOptions['--format']) {
+            videoFormatOptions[1] = options.videoFormatOptions['--format']
+        }
+        
         const dl = spawn(
             'youtube-dl',
             [
@@ -111,6 +117,8 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
                 ...fileOptions,
 
                 ...networkOptions,
+                
+                ...videoFormatOptions,
 
                 url,
             ],
@@ -150,7 +158,7 @@ export const getVideoInfo = (url, targetFolder, options = {}) => {
         if (options.networkOptions['--proxy']) {
             networkOptions[1] = options.networkOptions['--proxy']
         }
-        
+
         const dl = spawn(
             'youtube-dl',
             [

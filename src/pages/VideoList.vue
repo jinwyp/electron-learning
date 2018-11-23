@@ -15,6 +15,10 @@
                 <el-table-column prop="doc" label="Url" >
                     <template slot-scope="scope">{{ scope.row.doc.url }}</template>
                 </el-table-column>
+                
+                <el-table-column prop="jsonInfo" label="视频信息" >
+                    <template slot-scope="scope">{{ scope.row.jsonInfo }}</template>
+                </el-table-column>
             </el-table>
             
             <el-pagination :current-page.sync="pagination.pageNo" :page-size="pagination.pageSize" :pager-count="15" :total="pagination.total" background layout="total, prev, pager, next, jumper" @current-change="changePage" />
