@@ -99,7 +99,10 @@ body {
     .el-card__header {
         padding: 8px 10px;
     }
-    
+
+    .el-card__body {
+        padding: 8px 10px;
+    }
     .main-info {
         display: flex;
         flex-direction: row;
@@ -123,16 +126,5 @@ body {
         }
         
     }
-
-    .format-info {
-        div {
-            font-size: 13px;
-            padding: 5px;
-        }
-        
-        span {
-            display: inline;
-        }
-
-    }
+    
 }

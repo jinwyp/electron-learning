@@ -1,6 +1,7 @@
 
 import { durationBySecond, formatDateByDate } from './dateFormat'
 import { formatNumber, formatFileSize } from './cashFormat'
+import { validURL } from './urlTool'
 
 
 const version = '1.0.0'
@@ -36,7 +37,7 @@ const install = (Vue, options) => {
     Vue.mixin({
 
         methods: {
-            
+            GIsValidUrl: validURL
         },
     })
 }
