@@ -175,6 +175,28 @@ export default {
                     this.downloadError = result.error
                     console.log('result: ', result)
                     this.isShowLoading = false
+                    
+                    db.videoDownloadLogs.put({
+                        _id: 'youtube_' + tempVideoId + '_' + formatData.format_id,
+                        formatId: formatData.format_id,
+                        formatNote: formatData.format_note,
+                        format: formatData.format,
+                        ext: formatData.ext,
+                        container: formatData.container,
+                        width: formatData.width,
+                        height: formatData.height,
+                        vcodec: formatData.vcodec,
+                        acodec: formatData.acodec,
+                        fileSize: formatData.filesize,
+                        tbr: formatData.tbr,
+                        vbr: formatData.vbr,
+                        abr: formatData.abr,
+                        protocol: formatData.protocol,
+                        url: formatData.url,
+                        jsonInfo: JSON.stringify(formatData),
+                    }).then((doc) => {
+                        console.log('Doc Saved: ', doc)
+                    }).catch(httpErrorHandler)
                 })
             } else {
                 db.videos.get('youtube_' + tempVideoId).then((doc) => {
@@ -247,31 +269,26 @@ export default {
                     }
                 })
 
-                tempAudio.sort((a, b) => {
+                
+                function sortByFilenameAndSize(a, b) {
+                    
                     if (a.ext === b.ext) {
                         if (a.filesize === b.filesize) {
                             return 0
                         }
                         return a.filesize < b.filesize ? 1 : -1
                     }
-                    return a.ext < b.ext ? 1 : -1
-                })
-
-                tempVideo.sort((a, b) => {
-                    if (a.ext === b.ext) {
-                        if (a.filesize === b.filesize) {
-                            return 0
-                        }
-                        return a.filesize < b.filesize ? 1 : -1
-                    }
-                    return a.ext < b.ext ? 1 : -1
-                })
+                    return a.ext < b.ext ? -1 : 1
+                }
+                
+                tempAudio.sort(sortByFilenameAndSize)
+                tempVideo.sort(sortByFilenameAndSize)
 
                 tempVideoWithAudio.sort((a, b) => {
                     if (typeof b.filesize === 'undefined') {
                         return 1
                     }
-                    
+
                     if (a.ext === b.ext) {
                         if (a.filesize === b.filesize) {
                             return 0
