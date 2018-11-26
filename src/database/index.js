@@ -1,4 +1,4 @@
-import PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb'
 
 const db = {
     series: new PouchDB('series'),
@@ -6,6 +6,6 @@ const db = {
     videos: new PouchDB('videos'),
     videoDownloadLogs: new PouchDB('videoDownloadLogs'),
     search: new PouchDB('search'),
-};
+}
 
-export default db;
+export default db

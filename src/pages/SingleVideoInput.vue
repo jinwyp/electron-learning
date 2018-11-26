@@ -102,6 +102,7 @@
 <script>
     
 import { downloadVideo, getVideoInfo } from '../services/youtube/youtube-dl'
+import { httpErrorHandler } from '../services/httpErrorHandler'
 import db from '../database/index'
 
 export default {
@@ -147,13 +148,13 @@ export default {
     
     methods: {
         onSubmit (type, formatData) {
-            console.log('videoForm: ', this.videoForm)
+            console.log('VideoForm: ', this.videoForm)
             
             if (!this.GIsValidUrl(this.videoForm.videoUrl)) {
                 return
             }
             
-            // this.isShowLoading = true
+            this.isShowLoading = true
             
             const tempVideoIdIndex = this.videoForm.videoUrl.indexOf('?v=')
             const tempVideoId = this.videoForm.videoUrl.substr(tempVideoIdIndex + 3, 11)
@@ -176,35 +177,49 @@ export default {
                     this.isShowLoading = false
                 })
             } else {
-                db.videos.get(tempVideoId).then( (doc) => {
-                    console.log("doc: ", doc) 
-                    if (doc) {
-                        console.log("11doc: ", doc)
+                db.videos.get('youtube_' + tempVideoId).then((doc) => {
+                    if (doc && doc.displayId) {
+                        this.videoInfo = JSON.parse(doc.jsonInfo)
+                        this.getSortFormatList(this.videoInfo.formats)
+                        this.isShowLoading = false
                     }
-                }).catch(function (err) {
-                    console.log(err);
-                });
-                
-                // getVideoInfo(this.videoForm.videoUrl, savePath, this.youtubeDlOptions).then((result) => {
-                //     this.videoInfo = result.message
-                //     this.downloadError = result.error
-                //     this.isShowLoading = false
-                //    
-                //    
-                //     db.videos.put({
-                //         _id: tempVideoId,
-                //         title: result.message.title,
-                //         url: this.videoForm.videoUrl,
-                //         jsonInfo: JSON.stringify(result.message),
-                //     }).then(function (info) {
-                //         console.log(info)
-                //     })
-                //
-                //
-                //     this.getSortFormatList(this.videoInfo.formats)
-                //
-                //
-                // })
+                }).catch((error) => {
+                    if (error.status === 404 && error.name === 'not_found') {
+                        getVideoInfo(this.videoForm.videoUrl, savePath, this.youtubeDlOptions).then((result) => {
+                            this.videoInfo = result.message
+                            this.downloadError = result.error
+                            this.isShowLoading = false
+                            
+                            db.videos.put({
+                                _id: 'youtube_' + tempVideoId,
+                                url: this.videoForm.videoUrl,
+                                title: result.message.title,
+                                fullTitle: result.message.fulltitle,
+                                displayId: result.message.display_id,
+                                duration: result.message.duration,
+                                thumbnail: result.message.thumbnail,
+                                webPageUrl: result.message.webpage_url,
+                                uploadDate: result.message.upload_date,
+                                uploader: result.message.uploader,
+                                uploaderId: result.message.uploader_id,
+                                uploaderUrl: result.message.uploader_url,
+                                channelId: result.message.channel_id,
+                                channelUrl: result.message.channel_url,
+                                categories: result.message.categories,
+                                tags: result.message.tags,
+                                description: result.message.description,
+                                dislikeCount: result.message.dislike_count,
+                                likeCount: result.message.like_count,
+                                viewCount: result.message.view_count,
+                                jsonInfo: JSON.stringify(result.message),
+                            }).then((doc) => {
+                                console.log('Doc Saved: ', doc)
+                            }).catch(httpErrorHandler)
+
+                            this.getSortFormatList(this.videoInfo.formats)
+                        }).catch(httpErrorHandler)
+                    }
+                }).catch(httpErrorHandler)
             }
         },
         
