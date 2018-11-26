@@ -24,16 +24,18 @@
                 </el-table-column>
                 
                 <el-table-column prop="id" label="浏览/喜欢" width="120">
-                    <template slot-scope="scope">{{ scope.row.doc.viewCount }} / {{ scope.row.doc.likeCount}} </template>
+                    <template slot-scope="scope">{{ scope.row.doc.viewCount }} / {{ scope.row.doc.likeCount }} </template>
                 </el-table-column>
+<!--
 
-                <!--<el-table-column prop="id" label="说明" >-->
-                    <!--<template slot-scope="scope">{{ scope.row.doc.description }} </template>-->
-                <!--</el-table-column>-->
+                <el-table-column prop="id" label="说明" >
+                    <template slot-scope="scope">{{ scope.row.doc.description }} </template>
+                </el-table-column>
                 
-                <!--<el-table-column prop="jsonInfo" label="视频信息" >-->
-                    <!--<template slot-scope="scope">{{ scope.row.doc.jsonInfo }}</template>-->
-                <!--</el-table-column>-->
+                <el-table-column prop="jsonInfo" label="视频信息" >
+                    <template slot-scope="scope">{{ scope.row.doc.jsonInfo }}</template>
+                </el-table-column>
+-->
 
                 <el-table-column prop="id" label="操作" width="60">
                     <template slot-scope="scope">
@@ -92,9 +94,9 @@ export default {
                 return db.videos.remove(doc)
             }).then((result) => {
                 this.getVideoList()
-                this.$notify.success({ title: '操作成功',  message: '' });
+                this.$notify.success({ title: '操作成功', message: '' })
             }).catch(httpErrorHandler)
-        }
+        },
     },
 }
 </script>

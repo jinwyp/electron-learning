@@ -269,9 +269,7 @@ export default {
                     }
                 })
 
-                
-                function sortByFilenameAndSize(a, b) {
-                    
+                const sortByFilenameAndSize = function (a, b) {
                     if (a.ext === b.ext) {
                         if (a.filesize === b.filesize) {
                             return 0
