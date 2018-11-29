@@ -12,6 +12,7 @@ import Router from 'vue-router'
 
 import Page404 from './pages/Page404.vue'
 import VideoList from './pages/VideoList.vue'
+import VideoDownloadLogs from './pages/VideoDownloadLogs.vue'
 import SingleVideoInput from './pages/SingleVideoInput.vue'
 
 Vue.use(Router)
@@ -19,8 +20,10 @@ Vue.use(Router)
 
 
 const routes = [
-    { path: '/videos', name: 'videoList', component: VideoList, meta: { title: '视频列表' } },
-    { path: '/videos/create', name: 'createNewVideo', component: SingleVideoInput, meta: { title: '新增视频' } },
+    { path: '/videos', name: 'videoList', component: VideoList, meta: { title: '已下载视频列表' } },
+    { path: '/videoDownloadLogs', name: 'videoDownloadLogs', component: VideoDownloadLogs, meta: { title: '已下载视频格式日志' } },
+    { path: '/videos/create', name: 'createNewVideo', component: SingleVideoInput, meta: { title: '新增下载视频' }, props: { isCreate: true } },
+    { path: '/videos/edit/:videoId', name: 'editNewVideo', component: SingleVideoInput, meta: { title: '新增下载视频' }, props: { isCreate: false } },
     { path: '/PageNotFound404', name: 'pageNotFound', component: Page404, meta: { title: '页面未找到' } },
     { path: '/', redirect: '/videos' },
     { path: '*', redirect: '/PageNotFound404' },

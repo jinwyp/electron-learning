@@ -2,7 +2,6 @@
 import { Notification } from 'element-ui'
 
 const httpErrorHandler = function (error) {
-    
     const resultError = {
         title: '网络错误',
         message: '未处理的网络错误!',

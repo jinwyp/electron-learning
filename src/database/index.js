@@ -1,4 +1,5 @@
 import PouchDB from 'pouchdb'
+// PouchDB.plugin(require('pouchdb-find'))
 
 const db = {
     series: new PouchDB('series'),

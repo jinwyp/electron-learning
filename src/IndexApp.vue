@@ -82,6 +82,7 @@ export default {
                     ico: 'el-icon-news',
                     subMenu: [
                         { index: '/videos', name: '已下载视频列表' },
+                        { index: '/videoDownloadLogs', name: '已下载视频格式日志' },
                         { index: '/videos/create', name: '新增下载视频' },
                     ],
                 },

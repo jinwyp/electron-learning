@@ -12,45 +12,37 @@
                 </el-form-item>
             </el-form>
             
-            <el-button type="primary" @click="getVideoList">搜索</el-button>
+            <el-button type="primary" @click="getVideoDownloadLogs">搜索</el-button>
         </el-col>
 
         <el-col :span="24">
             
-            <el-table :data="videoList" border>
+            <el-table :data="videoDownloadLogs" border>
                 <el-table-column prop="id" label="ID" width="130">
-                    <template slot-scope="scope"><a :href="scope.row.doc.url" target="_blank">{{ scope.row.id }}</a></template>
+                    <template slot-scope="scope"><a :href="scope.row.doc.webPageUrl" target="_blank">{{ scope.row.id }}</a></template>
                 </el-table-column>
                 <el-table-column prop="doc" label="标题" >
                     <template slot-scope="scope">{{ scope.row.doc.title }}</template>
                 </el-table-column>
 
-                <el-table-column prop="id" label="作者" width="120">
-                    <template slot-scope="scope">{{ scope.row.doc.uploader }} </template>
+                <el-table-column prop="id" label="视频描述" width="120">
+                    <template slot-scope="scope">{{ scope.row.doc.format }} </template>
                 </el-table-column>
 
-                <el-table-column prop="id" label="上传时间" width="90">
-                    <template slot-scope="scope">{{ scope.row.doc.uploadDate }} </template>
+                <el-table-column prop="id" label="格式" width="50">
+                    <template slot-scope="scope">{{ scope.row.doc.ext }} </template>
                 </el-table-column>
                 
-                <el-table-column prop="id" label="浏览/喜欢" width="120">
-                    <template slot-scope="scope">{{ scope.row.doc.viewCount }} / {{ scope.row.doc.likeCount }} </template>
+                <el-table-column prop="id" label="文件大小" width="80">
+                    <template slot-scope="scope"> {{ scope.row.doc.fileSize | sizeDisplay }}  </template>
                 </el-table-column>
-                
-                <!--
-                <el-table-column prop="id" label="说明" >
-                    <template slot-scope="scope">{{ scope.row.doc.description }} </template>
+
+                <el-table-column prop="id" label="视频尺寸" width="90">
+                    <template slot-scope="scope"> {{ scope.row.doc.resolution }} </template>
                 </el-table-column>
-                
-                <el-table-column prop="jsonInfo" label="视频信息" >
-                    <template slot-scope="scope">{{ scope.row.doc.jsonInfo }}</template>
-                </el-table-column>
-                -->
 
                 <el-table-column prop="id" label="操作" width="60">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" circle @click="gotoSingleVideo( scope.row )"></el-button>
-                        <br>
                         <el-button type="danger" icon="el-icon-delete" circle @click="delVideoRecord( scope.row.id)"></el-button>
                     </template>
                 </el-table-column>
@@ -71,7 +63,7 @@ export default {
     components: {},
     data () {
         return {
-            videoList: [],
+            videoDownloadLogs: [],
             pagination: {
                 pageNo: 1,
                 pageSize: 100,
@@ -87,46 +79,41 @@ export default {
     created: function () {
         // `this` points to the vm instance
         console.log('Vue Component created: ')
-        this.getVideoList()
+        this.getVideoDownloadLogs()
     },
     
     methods: {
         changePage (currentPageNo) {
             console.log('当前分页 Pagination No: ', currentPageNo)
-            this.getVideoList()
+            this.getVideoDownloadLogs()
         },
 
-        getVideoList () {
-            this.videoList = []
+        getVideoDownloadLogs () {
+            this.videoDownloadLogs = []
             this.searchQuery.skip = (this.pagination.pageNo - 1) * this.pagination.pageSize
             this.searchQuery.limit = this.pagination.pageSize
             this.searchQuery.include_docs = true
             
-            db.videos.allDocs(this.searchQuery).then((result) => {
+            db.videoDownloadLogs.allDocs(this.searchQuery).then((result) => {
                 console.log('当前列表数据: ', result)
-                this.videoList = result.rows
-                console.log('当前列表数据: ', this.videoList)
+                this.videoDownloadLogs = result.rows
+                console.log('当前列表数据: ', this.videoDownloadLogs)
             }).catch(httpErrorHandler)
         },
 
         searchForm () {
             this.pagination.pageNo = 1
-            this.getVideoList()
+            this.getVideoDownloadLogs()
         },
 
         delVideoRecord (id) {
             console.log(id)
-            db.videos.get(id).then((doc) => {
-                return db.videos.remove(doc)
+            db.videoDownloadLogs.get(id).then((doc) => {
+                return db.videoDownloadLogs.remove(doc)
             }).then((result) => {
-                this.getVideoList()
+                this.getVideoDownloadLogs()
                 this.$notify.success({ title: '操作成功', message: '' })
             }).catch(httpErrorHandler)
-        },
-
-        gotoSingleVideo (row) {
-            console.log('row: ', row)
-            this.$router.push({ name: 'editNewVideo', params: { videoId: row.id }})
         },
     },
 }

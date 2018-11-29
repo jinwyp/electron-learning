@@ -73,7 +73,6 @@
                         </template>
                     </el-table-column>
                     
-                   
                 </el-table>
                 
             </el-card>
@@ -106,6 +105,14 @@ import { httpErrorHandler } from '../services/httpErrorHandler'
 import db from '../database/index'
 
 export default {
+    props: {
+        isCreate: {
+            type: Boolean,
+            required: false,
+            default: true,
+        },
+    },
+    
     data () {
         return {
             isShowLoading: false,
@@ -139,11 +146,23 @@ export default {
     created: function () {
         // `this` points to the vm instance
         console.log('Vue Component created: ')
-        db.videos.allDocs({ include_docs: true }).then(function (info) {
-            console.log('Video List: ', info)
-        })
 
-        this.getSortFormatList(this.videoInfo.formats)
+        if (!this.isCreate) {
+            if (this.$route.params && this.$route.params.videoId) {
+
+                db.videos.get(this.$route.params.videoId).then((doc) => {
+
+                    console.log('Fetch doc: ', doc)
+                    
+                    if (doc && doc.displayId) {
+                        this.videoInfo = JSON.parse(doc.jsonInfo)
+                        this.getSortFormatList(this.videoInfo.formats)
+                        
+                        this.videoForm.videoUrl = doc.webPageUrl
+                    }
+                }).catch(httpErrorHandler)
+            }
+        }
     },
     
     methods: {
@@ -178,6 +197,8 @@ export default {
                     
                     db.videoDownloadLogs.put({
                         _id: 'youtube_' + tempVideoId + '_' + formatData.format_id,
+                        webPageUrl: this.videoInfo.webpage_url,
+                        title: this.videoInfo.title,
                         formatId: formatData.format_id,
                         formatNote: formatData.format_note,
                         format: formatData.format,
@@ -188,6 +209,7 @@ export default {
                         vcodec: formatData.vcodec,
                         acodec: formatData.acodec,
                         fileSize: formatData.filesize,
+                        resolution: formatData.resolution || '',
                         tbr: formatData.tbr,
                         vbr: formatData.vbr,
                         abr: formatData.abr,
