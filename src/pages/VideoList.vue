@@ -126,7 +126,7 @@ export default {
 
         gotoSingleVideo (row) {
             console.log('row: ', row)
-            this.$router.push({ name: 'editNewVideo', params: { videoId: row.id }})
+            this.$router.push({ name: 'editNewVideo', params: { videoId: row.id } })
         },
     },
 }

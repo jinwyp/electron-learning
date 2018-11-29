@@ -149,9 +149,7 @@ export default {
 
         if (!this.isCreate) {
             if (this.$route.params && this.$route.params.videoId) {
-
                 db.videos.get(this.$route.params.videoId).then((doc) => {
-
                     console.log('Fetch doc: ', doc)
                     
                     if (doc && doc.displayId) {
