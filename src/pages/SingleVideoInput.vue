@@ -102,7 +102,7 @@
     
 import { downloadVideo, getVideoInfo } from '../services/youtube/youtube-dl'
 import { httpErrorHandler } from '../services/httpErrorHandler'
-import db from '../database/index'
+import { DBVideos, DBVideoDownloadLogs } from '../database/index'
 
 export default {
     props: {
@@ -149,7 +149,7 @@ export default {
 
         if (!this.isCreate) {
             if (this.$route.params && this.$route.params.videoId) {
-                db.videos.get(this.$route.params.videoId).then((doc) => {
+                DBVideos.get(this.$route.params.videoId).then((doc) => {
                     console.log('Fetch doc: ', doc)
                     
                     if (doc && doc.displayId) {
@@ -192,8 +192,8 @@ export default {
                     this.downloadError = result.error
                     console.log('result: ', result)
                     this.isShowLoading = false
-                    
-                    db.videoDownloadLogs.put({
+
+                    DBVideoDownloadLogs.put({
                         _id: 'youtube_' + tempVideoId + '_' + formatData.format_id,
                         webPageUrl: this.videoInfo.webpage_url,
                         title: this.videoInfo.title,
@@ -214,12 +214,13 @@ export default {
                         protocol: formatData.protocol,
                         url: formatData.url,
                         jsonInfo: JSON.stringify(formatData),
+                        createTime: new Date().toJSON(),
                     }).then((doc) => {
                         console.log('Doc Saved: ', doc)
                     }).catch(httpErrorHandler)
                 })
             } else {
-                db.videos.get('youtube_' + tempVideoId).then((doc) => {
+                DBVideos.get('youtube_' + tempVideoId).then((doc) => {
                     if (doc && doc.displayId) {
                         this.videoInfo = JSON.parse(doc.jsonInfo)
                         this.getSortFormatList(this.videoInfo.formats)
@@ -232,7 +233,7 @@ export default {
                             this.downloadError = result.error
                             this.isShowLoading = false
                             
-                            db.videos.put({
+                            DBVideos.put({
                                 _id: 'youtube_' + tempVideoId,
                                 url: this.videoForm.videoUrl,
                                 title: result.message.title,
@@ -254,6 +255,7 @@ export default {
                                 likeCount: result.message.like_count,
                                 viewCount: result.message.view_count,
                                 jsonInfo: JSON.stringify(result.message),
+                                createTime: new Date().toJSON(),
                             }).then((doc) => {
                                 console.log('Doc Saved: ', doc)
                             }).catch(httpErrorHandler)

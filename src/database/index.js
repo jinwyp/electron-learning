@@ -1,12 +1,22 @@
 import PouchDB from 'pouchdb'
-// PouchDB.plugin(require('pouchdb-find'))
+import Find from 'pouchdb-find'
+PouchDB.plugin(Find)
 
-const db = {
-    series: new PouchDB('series'),
-    episodes: new PouchDB('episodes'),
-    videos: new PouchDB('videos'),
-    videoDownloadLogs: new PouchDB('videoDownloadLogs'),
-    search: new PouchDB('search'),
-}
+const DBVideos = new PouchDB('videos')
+const DBVideoDownloadLogs = new PouchDB('videoDownloadLogs')
 
-export default db
+
+DBVideos.createIndex({
+    index: { fields: [ 'createTime', 'title', 'url' ] },
+}).then(function () {
+    console.log('DBVideos Index created!')
+})
+
+
+DBVideoDownloadLogs.createIndex({
+    index: { fields: [ 'createTime', 'title', 'webPageUrl', 'ext' ] },
+}).then(function () {
+    console.log('DBVideoDownloadLogs Index created!')
+})
+
+export { DBVideos, DBVideoDownloadLogs }

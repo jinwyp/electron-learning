@@ -21,7 +21,7 @@ Vue.use(Router)
 
 const routes = [
     { path: '/videos', name: 'videoList', component: VideoList, meta: { title: '已下载视频列表' } },
-    { path: '/videoDownloadLogs', name: 'videoDownloadLogs', component: VideoDownloadLogs, meta: { title: '已下载视频格式日志' } },
+    { path: '/videoDownloadLogs', name: 'videoDownloadLogs', component: VideoDownloadLogs, meta: { title: '已下载视频格式日志' }, props: true },
     { path: '/videos/create', name: 'createNewVideo', component: SingleVideoInput, meta: { title: '新增下载视频' }, props: { isCreate: true } },
     { path: '/videos/edit/:videoId', name: 'editNewVideo', component: SingleVideoInput, meta: { title: '新增下载视频' }, props: { isCreate: false } },
     { path: '/PageNotFound404', name: 'pageNotFound', component: Page404, meta: { title: '页面未找到' } },

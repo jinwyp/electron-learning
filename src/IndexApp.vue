@@ -1,10 +1,33 @@
 <template>
 
     <el-container class="main">
-        <el-header height="30px">
-
+        <el-header height="40px">
             <el-row type="flex" justify="space-between">
-                <el-col :span="20" class="text-l">Youtube 下载器</el-col>
+                <el-col :span="6">
+                    
+                    <div class="header-logo">
+                        <img src="@/assets/images/youtube_logo2.png" alt="">
+                    </div>
+                    
+                    <div class="header-text">下载器 </div>
+                </el-col>
+                
+                <el-col :span="14">
+
+                    <el-menu :default-active="currentSubMenu.index" router mode="horizontal" >
+
+                        <el-submenu v-for="(menu, index) in menuList" :key="index" :index="menu.index">
+                            <template slot="title">
+                                <span>{{ menu.name }}</span>
+                            </template>
+
+                            <el-menu-item v-for="(subMenu, subIndex) in menu.subMenu" :index="subMenu.index" :key="subIndex" @click="selectMenu(menu, subMenu)">{{ subMenu.name }}</el-menu-item>
+                        </el-submenu>
+
+                    </el-menu>
+                    
+                </el-col>
+                
                 <el-col :span="4" >
                     <el-dropdown class="fr">
                         <span class="el-dropdown-link">你好  <i class="el-icon-arrow-down el-icon--right"/></span>
@@ -21,25 +44,9 @@
         </el-header>
         
         
+        
+        
         <el-container>
-            <el-aside width="200px">
-                
-                <el-menu :default-active="currentSubMenu.index" router >
-
-                    <el-submenu v-for="(menu, index) in menuList" :key="index" :index="menu.index">
-                        <template slot="title">
-                            <i :class="menu.ico"/>
-                            <span>{{ menu.name }}</span>
-                        </template>
-
-                        <el-menu-item v-for="(subMenu, subIndex) in menu.subMenu" :index="subMenu.index" :key="subIndex" @click="selectMenu(menu, subMenu)">{{ subMenu.name }}</el-menu-item>
-                    </el-submenu>
-
-                </el-menu>
-                
-            </el-aside>
-            
-            
             <el-main>
                 <!--
                 <el-row>
@@ -78,7 +85,7 @@ export default {
             menuList: [
                 {
                     index: '1',
-                    name: 'youtube视频管理',
+                    name: 'Youtube管理',
                     ico: 'el-icon-news',
                     subMenu: [
                         { index: '/videos', name: '已下载视频列表' },

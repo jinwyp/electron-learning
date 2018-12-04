@@ -3,10 +3,14 @@
         <el-col :span="24">
             <el-form :inline="true" :model="searchQuery">
 
-                <el-form-item label="标题" >
+                <el-form-item label="标题:" >
                     <el-input v-model="searchQuery.title" placeholder="标题"></el-input>
                 </el-form-item>
 
+                <el-form-item label="ID:" >
+                    <el-input v-model="searchQuery.id" placeholder="ID"></el-input>
+                </el-form-item>
+                
                 <el-form-item>
                     <el-button type="primary" @click="searchForm">查询</el-button>
                 </el-form-item>
@@ -19,39 +23,32 @@
             
             <el-table :data="videoList" border>
                 <el-table-column prop="id" label="ID" width="130">
-                    <template slot-scope="scope"><a :href="scope.row.doc.url" target="_blank">{{ scope.row.id }}</a></template>
+                    <template slot-scope="scope"><a :href="scope.row.url" target="_blank">{{ scope.row._id }}</a></template>
                 </el-table-column>
-                <el-table-column prop="doc" label="标题" >
-                    <template slot-scope="scope">{{ scope.row.doc.title }}</template>
-                </el-table-column>
-
-                <el-table-column prop="id" label="作者" width="120">
-                    <template slot-scope="scope">{{ scope.row.doc.uploader }} </template>
-                </el-table-column>
-
-                <el-table-column prop="id" label="上传时间" width="90">
-                    <template slot-scope="scope">{{ scope.row.doc.uploadDate }} </template>
-                </el-table-column>
+                <el-table-column prop="title" label="标题" > </el-table-column>
+                <el-table-column prop="uploader" label="作者" width="130"> </el-table-column>
+                <el-table-column prop="uploadDate" label="原始上传时间" width="90"> </el-table-column>
                 
                 <el-table-column prop="id" label="浏览/喜欢" width="120">
-                    <template slot-scope="scope">{{ scope.row.doc.viewCount }} / {{ scope.row.doc.likeCount }} </template>
+                    <template slot-scope="scope">{{ scope.row.viewCount }} / {{ scope.row.likeCount }} </template>
                 </el-table-column>
                 
                 <!--
                 <el-table-column prop="id" label="说明" >
-                    <template slot-scope="scope">{{ scope.row.doc.description }} </template>
+                    <template slot-scope="scope">{{ scope.row.description }} </template>
                 </el-table-column>
                 
                 <el-table-column prop="jsonInfo" label="视频信息" >
-                    <template slot-scope="scope">{{ scope.row.doc.jsonInfo }}</template>
+                    <template slot-scope="scope">{{ scope.row.jsonInfo }}</template>
                 </el-table-column>
                 -->
 
-                <el-table-column prop="id" label="操作" width="60">
+                <el-table-column prop="id" label="操作" width="120">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" circle @click="gotoSingleVideo( scope.row )"></el-button>
+                        <el-button icon="el-icon-search" circle @click="gotoDownloadLogs( scope.row )"></el-button>
                         <br>
-                        <el-button type="danger" icon="el-icon-delete" circle @click="delVideoRecord( scope.row.id)"></el-button>
+                        <el-button type="primary" icon="el-icon-edit" circle @click="gotoSingleVideo( scope.row )"></el-button>
+                        <el-button type="danger" icon="el-icon-delete" circle @click="delVideoRecord( scope.row._id)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -64,7 +61,7 @@
 </template>
 
 <script>
-import db from '../database/index'
+import { DBVideos } from '../database/index'
 import { httpErrorHandler } from '../services/httpErrorHandler'
 
 export default {
@@ -80,13 +77,13 @@ export default {
 
             searchQuery: {
                 title: '',
+                id: '',
             },
         }
     },
     
     created: function () {
         // `this` points to the vm instance
-        console.log('Vue Component created: ')
         this.getVideoList()
     },
     
@@ -98,14 +95,25 @@ export default {
 
         getVideoList () {
             this.videoList = []
-            this.searchQuery.skip = (this.pagination.pageNo - 1) * this.pagination.pageSize
-            this.searchQuery.limit = this.pagination.pageSize
-            this.searchQuery.include_docs = true
-            
-            db.videos.allDocs(this.searchQuery).then((result) => {
+            // this.searchQuery.include_docs = true
+            //
+            // DBVideos.allDocs(this.searchQuery).then((result) => {
+            //     console.log('当前列表数据: ', result)
+            //     this.videoList = result.rows
+            //     console.log('当前列表数据: ', this.videoList)
+            // }).catch(httpErrorHandler)
+
+            DBVideos.find({
+                selector: {
+                    title: { $regex: this.searchQuery.title },
+                    _id: { $regex: 'youtube_' + this.searchQuery.id },
+                },
+                limit: this.pagination.pageSize,
+                skip: (this.pagination.pageNo - 1) * this.pagination.pageSize,
+
+            }).then((result) => {
                 console.log('当前列表数据: ', result)
-                this.videoList = result.rows
-                console.log('当前列表数据: ', this.videoList)
+                this.videoList = result.docs
             }).catch(httpErrorHandler)
         },
 
@@ -116,8 +124,8 @@ export default {
 
         delVideoRecord (id) {
             console.log(id)
-            db.videos.get(id).then((doc) => {
-                return db.videos.remove(doc)
+            DBVideos.get(id).then((doc) => {
+                return DBVideos.remove(doc)
             }).then((result) => {
                 this.getVideoList()
                 this.$notify.success({ title: '操作成功', message: '' })
@@ -126,7 +134,11 @@ export default {
 
         gotoSingleVideo (row) {
             console.log('row: ', row)
-            this.$router.push({ name: 'editNewVideo', params: { videoId: row.id } })
+            this.$router.push({ name: 'editNewVideo', params: { videoId: row._id } })
+        },
+
+        gotoDownloadLogs (row) {
+            this.$router.push({ name: 'videoDownloadLogs', params: { videoId: row._id } })
         },
     },
 }
