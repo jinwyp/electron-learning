@@ -16,7 +16,6 @@
                 </el-form-item>
             </el-form>
             
-            <el-button type="primary" @click="getVideoDownloadLogs">搜索</el-button>
         </el-col>
 
         <el-col :span="24">

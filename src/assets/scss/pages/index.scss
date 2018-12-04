@@ -86,7 +86,26 @@ body {
         height: 26px;
         line-height: 26px;
     }
-    
+
+
+
+}
+
+.el-form--inline{
+
+    .el-form-item {
+        margin-right: 20px;
+    }
+    .el-form-item__content {
+        width: 260px;
+    }
+}
+
+
+.form-item-button {
+    .el-form-item__content {
+        width: 120px;
+    }
 }
 
 .header-logo {

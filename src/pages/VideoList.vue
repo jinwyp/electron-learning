@@ -11,12 +11,11 @@
                     <el-input v-model="searchQuery.id" placeholder="ID"></el-input>
                 </el-form-item>
                 
-                <el-form-item>
+                <el-form-item class="form-item-button">
                     <el-button type="primary" @click="searchForm">查询</el-button>
                 </el-form-item>
             </el-form>
             
-            <el-button type="primary" @click="getVideoList">搜索</el-button>
         </el-col>
 
         <el-col :span="24">
