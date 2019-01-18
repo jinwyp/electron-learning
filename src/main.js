@@ -21,7 +21,7 @@ Vue.config.productionTip = false
 
 new Vue({
     router,
-    mounted() {
+    mounted () {
         // Prevent blank screen in Electron builds
         this.$router.push('/')
     },
