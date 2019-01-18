@@ -8,15 +8,14 @@ module.exports = {
         '@vue/standard'
     ],
     rules: {
-        'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'no-console': process.env.NODE_ENV === 'production' ? 'off' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         "indent": ["error", 4],
         "comma-dangle": ["error", "always-multiline"],
         "no-multiple-empty-lines": ["error", { "max": 6, "maxEOF": 2 }],
         "no-trailing-spaces": ["error", { "skipBlankLines": true }],
 
-
-
+        
         "vue/html-indent": ["error", 4, {
             "attribute": 1,
             "closeBracket": 0,

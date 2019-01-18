@@ -1,6 +1,8 @@
 {
-  "name": "hello-world",
-  "version": "0.1.0",
+  "name": "WMATOMP3",
+  "version": "1.0.0",
+  "description": "Convert wma to mp3",
+  "author": "JinWYP",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

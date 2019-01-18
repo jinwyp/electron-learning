@@ -75,7 +75,9 @@ export const downloadSubtitles = (url, targetFolder = '', { lang = 'enUS', filen
                 cwd: path.join('./', targetFolder),
             }
         )
-        dl.stderr.on('data', data => console.log('[dl-sub]:', data.toString()))
+        dl.stderr.on('data', data => {
+            console.log('[dl-sub]:', data.toString())
+        })
         dl.stdout.on('close', () => {
             const subtitlesFile = filename.replace('.mp4', `.${lang}.ass`)
             resolve(path.join(targetFolder, subtitlesFile))
