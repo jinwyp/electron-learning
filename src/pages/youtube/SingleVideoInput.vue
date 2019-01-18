@@ -100,9 +100,10 @@
 
 <script>
     
-import { downloadVideo, getVideoInfo } from '../services/youtube/youtube-dl'
-import { httpErrorHandler } from '../services/httpErrorHandler'
-import { DBVideos, DBVideoDownloadLogs } from '../database/index'
+import { downloadVideo, getVideoInfo } from '../../services/youtube/youtube-dl'
+import { httpErrorHandler } from '../../services/httpErrorHandler'
+import { notifyDuration } from '../../utils/constant'
+import { DBVideos, DBVideoDownloadLogs } from '../../database/index'
 
 export default {
     props: {
@@ -168,7 +169,11 @@ export default {
             console.log('VideoForm: ', this.videoForm)
             
             if (!this.GIsValidUrl(this.videoForm.videoUrl)) {
-                return
+                return this.$notify.error({
+                    title: '请输入正确的网址!',
+                    message: '',
+                    duration: notifyDuration,
+                })
             }
             
             this.isShowLoading = true

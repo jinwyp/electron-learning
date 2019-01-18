@@ -49,8 +49,8 @@
 </template>
 
 <script>
-import { DBVideoDownloadLogs } from '../database/index'
-import { httpErrorHandler } from '../services/httpErrorHandler'
+import { DBVideoDownloadLogs } from '../../database/index'
+import { httpErrorHandler } from '../../services/httpErrorHandler'
 
 export default {
     components: {},

@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import { DBVideos } from '../database/index'
-import { httpErrorHandler } from '../services/httpErrorHandler'
+import { DBVideos } from '../../database/index'
+import { httpErrorHandler } from '../../services/httpErrorHandler'
 
 export default {
     components: {},
@@ -133,7 +133,7 @@ export default {
 
         gotoSingleVideo (row) {
             console.log('row: ', row)
-            this.$router.push({ name: 'editNewVideo', params: { videoId: row._id } })
+            this.$router.push({ name: 'editVideo', params: { videoId: row._id } })
         },
 
         gotoDownloadLogs (row) {

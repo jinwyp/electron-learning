@@ -86,9 +86,23 @@ body {
         height: 26px;
         line-height: 26px;
     }
+    
+}
 
 
+.el-form-item {
+    
+    .el-form-item__content {
 
+        .el-select {
+            width: 120px;
+            line-height: 40px;
+        }
+        .el-radio-group {
+            vertical-align: top;
+        }
+    }
+    
 }
 
 .el-form--inline{
@@ -167,6 +181,14 @@ body {
         .description {
             padding: 10px;
             span {
+                margin-right: 15px;
+                font-size: 14px;
+            }
+        }
+
+        .audio-info {
+            padding: 10px;
+            div {
                 margin-right: 15px;
                 font-size: 14px;
             }

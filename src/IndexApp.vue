@@ -93,6 +93,17 @@ export default {
                         { index: '/videos/create', name: '新增下载视频' },
                     ],
                 },
+
+                {
+                    index: '2',
+                    name: '音频转换管理',
+                    ico: 'el-icon-news',
+                    subMenu: [
+                        { index: '/audios', name: '已转换音频列表' },
+                        { index: '/audios/create', name: '新增音频' },
+                    ],
+                },
+                
             ],
             
             currentMenu: {

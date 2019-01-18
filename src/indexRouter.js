@@ -11,19 +11,29 @@ import Router from 'vue-router'
 
 
 import Page404 from './pages/Page404.vue'
-import VideoList from './pages/VideoList.vue'
-import VideoDownloadLogs from './pages/VideoDownloadLogs.vue'
-import SingleVideoInput from './pages/SingleVideoInput.vue'
+import VideoList from './pages/youtube/VideoList.vue'
+import VideoDownloadLogs from './pages/youtube/VideoDownloadLogs.vue'
+import SingleVideoInput from './pages/youtube/SingleVideoInput.vue'
+
+import AudioConvertLogList from './pages/ffmpeg/AudioConvertLogList.vue'
+import SingleAudioInput from './pages/ffmpeg/SingleAudioInput.vue'
 
 Vue.use(Router)
 
 
 
 const routes = [
+    { path: '/audios', name: 'audioList', component: AudioConvertLogList, meta: { title: '已转换音频列表' } },
+    { path: '/audios/create', name: 'createNewAudio', component: SingleAudioInput, meta: { title: '新增转换音频' }, props: { isCreate: true } },
+    { path: '/audios/edit/:audioId', name: 'editAudio', component: SingleAudioInput, meta: { title: '编辑已转换音频' }, props: { isCreate: false } },
+    
     { path: '/videos', name: 'videoList', component: VideoList, meta: { title: '已下载视频列表' } },
     { path: '/videoDownloadLogs', name: 'videoDownloadLogs', component: VideoDownloadLogs, meta: { title: '已下载视频格式日志' }, props: true },
+
     { path: '/videos/create', name: 'createNewVideo', component: SingleVideoInput, meta: { title: '新增下载视频' }, props: { isCreate: true } },
-    { path: '/videos/edit/:videoId', name: 'editNewVideo', component: SingleVideoInput, meta: { title: '新增下载视频' }, props: { isCreate: false } },
+    { path: '/videos/edit/:videoId', name: 'editVideo', component: SingleVideoInput, meta: { title: '编辑已下载视频' }, props: { isCreate: false } },
+    
+    
     { path: '/PageNotFound404', name: 'pageNotFound', component: Page404, meta: { title: '页面未找到' } },
     { path: '/', redirect: '/videos' },
     { path: '*', redirect: '/PageNotFound404' },

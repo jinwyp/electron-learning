@@ -4,6 +4,13 @@ PouchDB.plugin(Find)
 
 const DBVideos = new PouchDB('videos')
 const DBVideoDownloadLogs = new PouchDB('videoDownloadLogs')
+const DBAudioConvertLogs = new PouchDB('audioConvertLogs')
+
+DBAudioConvertLogs.createIndex({
+    index: { fields: [ 'createTime', 'sourceFilename', 'sourceFullPath' ] },
+}).then(function () {
+    console.log('DBAudioConvertLogs Index created!')
+})
 
 
 DBVideos.createIndex({
@@ -19,4 +26,4 @@ DBVideoDownloadLogs.createIndex({
     console.log('DBVideoDownloadLogs Index created!')
 })
 
-export { DBVideos, DBVideoDownloadLogs }
+export { DBVideos, DBVideoDownloadLogs, DBAudioConvertLogs }
