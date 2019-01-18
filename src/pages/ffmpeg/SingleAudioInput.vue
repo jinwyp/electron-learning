@@ -1,14 +1,12 @@
 <template>
     <el-row>
         <el-col :span="24">
-            
             <el-form ref="form" :model="audioForm" label-width="140px">
-
                 <el-form-item label="选择要转换的文件:">
-                    <el-button type="primary" size="small" @click="openFile">选择文件</el-button>
+                    <el-button type="primary" size="small" @click="openFile('originalFile')">选择文件</el-button>
+                    
                     <span> {{ audioForm.originalFilePath }} </span>
                 </el-form-item>
-          
                 
                 <el-form-item label="转换后的格式:">
                     <el-radio-group v-model="audioForm.targetFormat">
@@ -19,6 +17,11 @@
                         <el-option v-for="item in audioFormatList.slice(6)" :key="item.id" :label="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
+
+                <el-form-item label="输出文件夹路径:">
+                    <el-button type="primary" size="small" @click="openFile('targetPath')">选择输出的文件夹</el-button>
+                    <el-input v-model="audioForm.targetFilePath" placeholder="默认为源文件相同文件夹" />
+                </el-form-item>
                 
                 <el-form-item label="" class="form-one-line-multi">
                     <el-button v-loading.fullscreen.lock="isShowLoading" type="primary" plain size="small" @click="onSubmit('info')">点击转换</el-button>
@@ -26,6 +29,7 @@
             </el-form>
         </el-col>
 
+        
         <el-col :span="24">
             <el-card v-if="audioInfo.sourceFullPath" class="card-video-info">
                 <div slot="header">
@@ -37,7 +41,6 @@
                     <br>
                     <div> Output File: {{ audioInfo.targetFilename }} &nbsp;&nbsp; ({{ audioInfo.targetFullPath }}) </div>
                 </div>
-                
             </el-card>
         </el-col>
     </el-row>
@@ -89,6 +92,7 @@ export default {
             audioForm: {
                 targetFormat: 'MP3',
                 originalFilePath: '',
+                targetFilePath: '',
             },
             
             FFMPEGOptions: {
@@ -135,7 +139,7 @@ export default {
             
             this.isShowLoading = true
             
-            const savePath = this.savePath + '/' + this.audioForm.targetFormat
+            // const savePath = this.savePath + '/' + this.audioForm.targetFormat
             
             DBAudioConvertLogs.get(this.audioForm.originalFilePath).then((doc) => {
                 console.log('Audio Converted File: ', doc)
@@ -147,7 +151,7 @@ export default {
                 if (error.status === 404 && error.name === 'not_found') {
                     console.log('Audio FFMPEGOptions: ', this.FFMPEGOptions)
                     
-                    convertAudioToMP3(this.audioForm.originalFilePath, savePath).then((result) => {
+                    convertAudioToMP3(this.audioForm.originalFilePath, this.audioForm.targetFilePath).then((result) => {
                         this.audioInfo = result.message
                         this.downloadError = result.error
                         this.isShowLoading = false
@@ -177,16 +181,25 @@ export default {
         },
 
 
-        openFile () {
+        openFile (type) {
             if (this.isHideOpenFileDialog) {
                 this.isHideOpenFileDialog = false
                 
-                dialog.showOpenDialog({
+                let options = {
                     properties: ['openFile', 'noResolveAliases'],
                     filters: [
                         { name: 'Audio', extensions: ['aac', 'mp3', 'wma', 'wav', 'ape', 'JPG'] },
                     ],
-                }, (files) => {
+                }
+                if (type === 'originalFile') {
+                    
+                } else if (type === 'targetPath') {
+                    options = {
+                        properties: ['openDirectory', 'noResolveAliases'],
+                    }
+                }
+                
+                dialog.showOpenDialog(options, (files) => {
                     console.log('files: ', files)
                     this.isHideOpenFileDialog = true
 
@@ -195,7 +208,11 @@ export default {
                     }
 
                     if (Array.isArray(files)) {
-                        this.audioForm.originalFilePath = files[0]
+                        if (type === 'originalFile') {
+                            this.audioForm.originalFilePath = files[0]
+                        } else if (type === 'targetPath') {
+                            this.audioForm.targetFilePath = files[0]
+                        }
                     }
                 })
             } else {

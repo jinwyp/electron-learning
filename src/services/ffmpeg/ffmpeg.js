@@ -18,6 +18,11 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
         const sourceFileFullName = path.basename(sourceFile)
         
         const targetFileFullName = path.join(sourceFileBasename + '.mp3')
+        let targetFileFullPath = path.resolve(targetFolder)
+        
+        if (!targetFolder) {
+            targetFileFullPath = path.dirname(sourceFile)
+        }
 
         console.log('FFMPEG To MP3: ', sourceFilePath, targetFolder, sourceFile)
         
@@ -46,7 +51,7 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
                 targetFileFullName,
             ],
             {
-                cwd: path.join('./', targetFolder),
+                cwd: targetFileFullPath,
             }
         )
 
@@ -69,7 +74,7 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
                 sourceFileExt: sourceFileExt,
                 targetFilename: targetFileFullName,
                 targetFileExt: 'MP3',
-                targetFullPath: path.resolve('./', targetFolder) + '/' + targetFileFullName,
+                targetFullPath: targetFileFullPath + '/' + targetFileFullName,
             }
             resolve({ code, message: fileInfo, error })
         })

@@ -14,35 +14,35 @@
                 
                 <el-col :span="14">
 
-                    <el-menu :default-active="currentSubMenu.index" router mode="horizontal" >
+                    <el-menu :default-active="currentSubMenu.index" router mode="horizontal">
 
                         <el-submenu v-for="(menu, index) in menuList" :key="index" :index="menu.index">
                             <template slot="title">
                                 <span>{{ menu.name }}</span>
                             </template>
 
-                            <el-menu-item v-for="(subMenu, subIndex) in menu.subMenu" :index="subMenu.index" :key="subIndex" @click="selectMenu(menu, subMenu)">{{ subMenu.name }}</el-menu-item>
+                            <el-menu-item v-for="(subMenu, subIndex) in menu.subMenu" :key="subIndex" :index="subMenu.index" @click="selectMenu(menu, subMenu)">{{ subMenu.name }}</el-menu-item>
                         </el-submenu>
-
                     </el-menu>
                     
                 </el-col>
                 
-                <el-col :span="4" >
+                <el-col :span="4">
                     <el-dropdown class="fr">
-                        <span class="el-dropdown-link">你好  <i class="el-icon-arrow-down el-icon--right"/></span>
+                        <span class="el-dropdown-link">你好 <i class="el-icon-arrow-down el-icon--right" /></span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>用户信息</el-dropdown-item>
+                            
                             <el-dropdown-item>
                                 <a class="a-style-none" href="http://news-cms.51y5.net/index.do" target="_blank">跳转老系统</a>
                             </el-dropdown-item>
+                            
                             <el-dropdown-item divided>退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-col>
             </el-row>
         </el-header>
-        
         
         
         
@@ -66,11 +66,10 @@
                     </el-col>
                 </el-row>
                 
-                <router-view :key="$route.fullPath"/>
+                <router-view :key="$route.fullPath" />
             </el-main>
         </el-container>
     </el-container>
-  
 </template>
 
 <script>

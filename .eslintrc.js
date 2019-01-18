@@ -44,7 +44,18 @@ module.exports = {
         "vue/html-closing-bracket-newline": ["error", {
             "singleline": "never",
             "multiline": "never"
-        }]
+        }],
+
+        "vue/singleline-html-element-content-newline": ["off", {
+            "ignoreWhenNoAttributes": true,
+            "ignoreWhenEmpty": true,
+            "ignores": ["pre", "textarea"]
+        }],
+
+        "vue/multiline-html-element-content-newline": ["off", {
+            "ignoreWhenEmpty": true,
+            "ignores": ["pre", "textarea"]
+        }],
 
     },
     parserOptions: {
