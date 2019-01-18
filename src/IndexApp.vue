@@ -108,8 +108,8 @@ export default {
             
             currentMenu: {
                 index: '1',
-                name: 'youtube视频管理',
-                ico: 'el-icon-menu',
+                name: 'Youtube管理',
+                ico: 'el-icon-news',
                 subMenu: [],
             },
             
