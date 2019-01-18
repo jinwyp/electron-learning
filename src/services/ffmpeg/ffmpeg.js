@@ -26,7 +26,7 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
 
         console.log('FFMPEG To MP3: ', sourceFilePath, targetFolder, sourceFile)
         
-        console.log('Audio File Info: ', sourceFileFullName, targetFileFullName, path.join('./', targetFolder), path.join('./'), path.resolve('./'))
+        console.log('Audio File Info: ', sourceFileFullName, targetFileFullName, targetFileFullPath, path.join('./', targetFolder), path.resolve('./'))
         
         mkdirp.sync(targetFolder)
         
