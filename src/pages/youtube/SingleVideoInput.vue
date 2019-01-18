@@ -1,7 +1,6 @@
 <template>
     <el-row>
         <el-col :span="24">
-            
             <el-form ref="form" :model="videoForm" label-width="100px">
                 <el-form-item label="代理服务器:">
                     <el-input v-model="videoForm.socks5" placeholder="socks5://127.0.0.1:1086/" />

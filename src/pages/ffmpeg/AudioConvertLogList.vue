@@ -2,12 +2,11 @@
     <el-row>
         <el-col :span="24">
             <el-form :inline="true" :model="searchQuery">
-
-                <el-form-item label="关键字:" >
+                <el-form-item label="关键字:">
                     <el-input v-model="searchQuery.sourceFullPath" placeholder="标题"></el-input>
                 </el-form-item>
 
-                <el-form-item label="ID:" >
+                <el-form-item label="ID:">
                     <el-input v-model="searchQuery.id" placeholder="ID"></el-input>
                 </el-form-item>
                 
@@ -29,7 +28,7 @@
                         <span>( {{ scope.row._id }} )</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="targetFilename" label="转换后文件" >
+                <el-table-column prop="targetFilename" label="转换后文件">
                     <template slot-scope="scope">
                         <span> {{ scope.row.targetFilename }} </span>
                         <br>

@@ -2,12 +2,11 @@
     <el-row>
         <el-col :span="24">
             <el-form :inline="true" :model="searchQuery">
-
-                <el-form-item label="标题" >
+                <el-form-item label="标题">
                     <el-input v-model="searchQuery.title" placeholder="标题"></el-input>
                 </el-form-item>
 
-                <el-form-item label="ID:" >
+                <el-form-item label="ID:">
                     <el-input v-model="searchQuery.id" placeholder="ID"></el-input>
                 </el-form-item>
                 
@@ -24,7 +23,7 @@
                 <el-table-column prop="id" label="ID" width="130">
                     <template slot-scope="scope"><a :href="scope.row.webPageUrl" target="_blank">{{ scope.row._id }}</a></template>
                 </el-table-column>
-                <el-table-column prop="title" label="标题" > </el-table-column>
+                <el-table-column prop="title" label="标题"> </el-table-column>
                 <el-table-column prop="format" label="视频描述" width="120"> </el-table-column>
                 <el-table-column prop="ext" label="格式" width="50"> </el-table-column>
                 
