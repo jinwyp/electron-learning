@@ -7,6 +7,8 @@
                     
                     <div class="header-logo">
                         <img src="@/assets/images/youtube_logo2.png" alt="">
+                        
+                        
                     </div>
                     
                     <div class="header-text">下载器 </div>
@@ -76,7 +78,7 @@
     
 import { remote } from 'electron'
 
-const { Menu } = remote
+const { Menu, app } = remote
 
 export default {
     data () {
@@ -121,6 +123,10 @@ export default {
     created: function () {
         // `this` points to the vm instance
         // this.initMenu()
+        console.log(app.getPath('userData'))
+        console.log(app.getPath('home'))
+        console.log(app.getPath('appData'))
+        console.log(app.getAppPath())
     },
     methods: {
         selectMenu (menu, subMenu) {

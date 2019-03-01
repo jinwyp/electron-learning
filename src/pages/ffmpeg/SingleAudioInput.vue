@@ -19,8 +19,9 @@
                 </el-form-item>
 
                 <el-form-item label="输出文件夹路径:">
-                    <el-button type="primary" size="small" @click="openFile('targetPath')">选择输出的文件夹</el-button>
-                    <el-input v-model="audioForm.targetFilePath" placeholder="默认为源文件相同文件夹" />
+                    <el-input v-model="audioForm.targetFilePath" placeholder="默认为源文件相同文件夹" :readonly="isMas()">
+                        <tk-select-directory v-if="isRenderer()" slot="append" @selected="onDirectorySelected" />
+                    </el-input>
                 </el-form-item>
                 
                 <el-form-item label="" class="form-one-line-multi">
@@ -47,16 +48,21 @@
 </template>
 
 <script>
-    
+
+import is from 'electron-is'
 import { convertAudioToMP3 } from '../../services/ffmpeg/ffmpeg'
 import { httpErrorHandler } from '../../services/httpErrorHandler'
 import { notifyDuration } from '../../utils/constant'
 import { DBAudioConvertLogs } from '../../database/index'
 
+import SelectDirectory from '../../components/native/SelectDirectory'
 
 const { dialog } = require('electron').remote
 
 export default {
+    components: {
+        [SelectDirectory.name]: SelectDirectory,
+    },
     props: {
         isCreate: {
             type: Boolean,
@@ -125,6 +131,13 @@ export default {
     },
     
     methods: {
+        isRenderer: is.renderer,
+        isMas: is.mas,
+
+        onDirectorySelected (dir) {
+            this.audioForm.targetFilePath = dir
+        },
+        
         onSubmit (type, formatData) {
             console.log('audioForm: ', this.audioForm)
 
@@ -135,7 +148,6 @@ export default {
                     duration: notifyDuration,
                 })
             }
-            
             
             this.isShowLoading = true
             
@@ -191,13 +203,6 @@ export default {
                         { name: 'Audio', extensions: ['aac', 'mp3', 'wma', 'wav', 'ape', 'JPG'] },
                     ],
                 }
-                if (type === 'originalFile') {
-                    
-                } else if (type === 'targetPath') {
-                    options = {
-                        properties: ['openDirectory', 'noResolveAliases'],
-                    }
-                }
                 
                 dialog.showOpenDialog(options, (files) => {
                     console.log('files: ', files)
@@ -210,8 +215,6 @@ export default {
                     if (Array.isArray(files)) {
                         if (type === 'originalFile') {
                             this.audioForm.originalFilePath = files[0]
-                        } else if (type === 'targetPath') {
-                            this.audioForm.targetFilePath = files[0]
                         }
                     }
                 })

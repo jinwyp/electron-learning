@@ -17,8 +17,13 @@ protocol.registerStandardSchemes(['app'], {secure: true})
 
 function createWindow() {
     // Create the browser window.  创建浏览器窗口。
-    mainWindow = new BrowserWindow({width: 800, height: 600})
-
+    mainWindow = new BrowserWindow({
+        titleBarStyle: 'default',
+        useContentSize: true,
+        width: 1024,
+        height: 768
+    })
+    
     if (isDevelopment) {
         // Load the url of the dev server if in development mode
         mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL)

@@ -11,6 +11,8 @@ Download youtube videos and convert audio to mp3 tool
 4. 然后运行 ```npm install -g @vue/cli```
 5. 启动程序, 运行 ```npm run electron:serve```  开启程序.
 
+6. 如果npm i 卡住 可以先 ``` npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver ```
+7. 把 https://npm.taobao.org/mirrors/electron/4.0.5/chromedriver-v4.0.5-darwin-x64.zip 下载 解压后  替换该项目 electron-learning/node_modules/spectron/node_modules/electron-chromedriver/bin
 
 
 ### 快速入门 教程
@@ -22,8 +24,14 @@ Download youtube videos and convert audio to mp3 tool
 [youtube-dl 下载youtube视频工具](https://github.com/rg3/youtube-dl)
 [ffmpeg 音频视频转换工具](https://ffmpeg.org/documentation.html)
 [ffmpeg 按照脚本 带各种解码器](https://gist.github.com/clayton/6196167)
+[electron taobao的镜像 chromedriver-v4.0.5-darwin-x64.zip](https://npm.taobao.org/mirrors/electron/4.0.5/)
 
 
 
 
 
+### 文件结果
+
+1. 入口文件为 src/background.js, 此为electron 主进程文件. 在package.json可以修改该入口文件.
+2. background.js 运行后启动 public/index.html,  进入页面后启动 src/main.js  即Vue的第一个js文件.
+3. src/main.js 调用IndexApp.vue组件 运行Vue的第一个组件.
