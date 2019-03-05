@@ -189,6 +189,7 @@ export default {
         }
     },
     
+    
     methods: {
         onDirectorySelected (dir) {
             this.videoForm.downloadSavePath = dir
@@ -211,17 +212,19 @@ export default {
             const tempVideoIdIndex = this.videoForm.videoUrl.indexOf('?v=')
             const tempVideoId = this.videoForm.videoUrl.substr(tempVideoIdIndex + 3, 11)
             this.videoForm.videoId = 'youtube_' + tempVideoId
-            const savePath = this.videoForm.downloadSavePath + '/' + tempVideoId + '/' + formatData.format_id
+            const savePath = this.videoForm.downloadSavePath + '/' + tempVideoId
 
             
             console.log('VideoId: ', tempVideoId, tempVideoIdIndex, this.youtubeDlOptions.videoFormatOptions)
             
             if (type === 'download') {
+                let targetPath = savePath
                 if (formatData.format_id) {
                     this.youtubeDlOptions.videoFormatOptions['--format'] = formatData.format_id
+                    targetPath = savePath + '/' + formatData.format_id
                 }
                 
-                downloadVideo(this.videoForm.videoUrl, savePath, this.youtubeDlOptions).then((result) => {
+                downloadVideo(this.videoForm.videoUrl, targetPath, this.youtubeDlOptions).then((result) => {
                     this.downloadLog = result.message
                     this.downloadError = result.error
                     console.log('result: ', result)

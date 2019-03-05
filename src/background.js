@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
-
-import {app, protocol, Menu, BrowserWindow} from 'electron'
+import is from 'electron-is'
+import {app, protocol, Menu, shell, BrowserWindow} from 'electron'
 import {createProtocol, installVueDevtools} from 'vue-cli-plugin-electron-builder/lib'
 
 const pathIndex = path.join(__dirname, 'index.html')
@@ -48,31 +48,82 @@ function createWindow() {
         {
             label: "Application",
             submenu: [
-                { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
-                { type: "separator" },
+                { role: 'about' },
+                { type: 'separator' },
+                { role: 'services' },
                 { label: 'Settings', accelerator: 'CmdOrCtrl+,' },
-                { type: "separator" },
-                { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+                { type: 'separator' },
+                { role: 'hide' },
+                { role: 'hideothers' },
+                { role: 'unhide' },
+                { type: 'separator' },
+                { role: 'quit' },
             ]
-        }, 
+        },
+        {
+            label: 'File',
+            submenu: [
+                is.macOS() ? { role: 'close' } : { role: 'quit' }
+            ]
+        },
         {
             label: "Edit",
             submenu: [
-                { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-                { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-                { type: "separator" },
-                { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-                { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-                { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-                { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+                { role: 'undo' },
+                { role: 'redo' },
+                { type: 'separator' },
+                { role: 'cut' },
+                { role: 'copy' },
+                { role: 'paste' },
+                ...(is.macOS() ? [
+                    { role: 'pasteAndMatchStyle' },
+                    { role: 'delete' },
+                    { role: 'selectAll' },
+                    { type: 'separator' },
+                    {
+                        label: 'Speech',
+                        submenu: [
+                            { role: 'startspeaking' },
+                            { role: 'stopspeaking' }
+                        ]
+                    }
+                ] : [
+                    { role: 'delete' },
+                    { type: 'separator' },
+                    { role: 'selectAll' }
+                ])
             ]
         },
         {
             label: "View",
             submenu: [
-                { label: "Reload", accelerator: "CmdOrCtrl+R", selector: "reload:" },
+                { role: 'reload' },
+                { role: 'forcereload' },
+                { role: 'toggledevtools' },
+                { type: 'separator' },
+                { role: 'resetzoom' },
+                { role: 'zoomin' },
+                { role: 'zoomout' },
+                { type: 'separator' },
+                { role: 'togglefullscreen' }
             ]
         },
+
+        {
+            label: 'Window',
+            submenu: [
+                { role: 'minimize' },
+                { role: 'zoom' },
+                ...(is.macOS() ? [
+                    { type: 'separator' },
+                    { role: 'front' },
+                    { type: 'separator' },
+                    { role: 'window' }
+                ] : [
+                    { role: 'close' }
+                ])
+            ]
+        }
         
     ];
 
