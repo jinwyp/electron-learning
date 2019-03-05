@@ -10,6 +10,12 @@
                     <el-input v-model="videoForm.videoUrl" />
                     <el-button v-loading.fullscreen.lock="isShowLoading" class="ml-20" type="primary" plain size="small" @click="onSubmit('info')">获取视频信息</el-button>
                 </el-form-item>
+
+                <el-form-item label="保存路径:">
+                    <el-input v-model="videoForm.downloadSavePath" placeholder="默认为用户下载目录">
+                        <tk-select-directory slot="append" @selected="onDirectorySelected" />
+                    </el-input>
+                </el-form-item>
             </el-form>
         </el-col>
 
@@ -98,13 +104,21 @@
 </template>
 
 <script>
-    
+
+import { notifyDuration } from '../../utils/constant'
+import { appPath } from '../../utils/appConfig'
+
 import { downloadVideo, getVideoInfo } from '../../services/youtube/youtube-dl'
 import { httpErrorHandler } from '../../services/httpErrorHandler'
-import { notifyDuration } from '../../utils/constant'
 import { DBVideos, DBVideoDownloadLogs } from '../../database/index'
 
+
+import SelectDirectory from '../../components/native/SelectDirectory'
+
 export default {
+    components: {
+        [SelectDirectory.name]: SelectDirectory,
+    },
     props: {
         isCreate: {
             type: Boolean,
@@ -120,12 +134,11 @@ export default {
             downloadLog: [],
             downloadError: [],
             
-            downloadSavePath: 'download/youtube',
-            
             videoForm: {
                 videoUrl: '',
                 videoTitle: '',
                 socks5: '',
+                downloadSavePath: appPath.downloads,
             },
             
             youtubeDlOptions: {
@@ -164,6 +177,11 @@ export default {
     },
     
     methods: {
+        onDirectorySelected (dir) {
+            this.videoForm.downloadSavePath = dir
+        },
+
+        
         onSubmit (type, formatData) {
             console.log('VideoForm: ', this.videoForm)
             
@@ -179,8 +197,7 @@ export default {
             
             const tempVideoIdIndex = this.videoForm.videoUrl.indexOf('?v=')
             const tempVideoId = this.videoForm.videoUrl.substr(tempVideoIdIndex + 3, 11)
-            const savePath = this.downloadSavePath + '/' + tempVideoId
-
+            const savePath = this.videoForm.downloadSavePath + '/' + tempVideoId
 
             
             console.log('VideoId: ', tempVideoId, tempVideoIdIndex, this.youtubeDlOptions.videoFormatOptions)

@@ -1,7 +1,10 @@
 import path from 'path'
 import { spawn } from 'child_process'
 import mkdirp from 'mkdirp'
+import { getAppRootDir, appPath } from '../../utils/appConfig'
 
+
+const youtubeDlPath = path.join(getAppRootDir() + '/youtube-dl')
 
 
 const networkOptions = [
@@ -61,7 +64,7 @@ export const downloadSubtitles = (url, targetFolder = '', { lang = 'enUS', filen
         }
         
         const dl = spawn(
-            'youtube-dl',
+            youtubeDlPath,
             [
                 '--skip-download',
                 
@@ -87,7 +90,7 @@ export const downloadSubtitles = (url, targetFolder = '', { lang = 'enUS', filen
 
 export const getStreamUrl = url => {
     return new Promise(resolve => {
-        const dl = spawn('youtube-dl', ['-g', url])
+        const dl = spawn(youtubeDlPath, ['-g', url])
         dl.stdout.on('data', data => resolve(data.toString().trim()))
     })
 }
@@ -96,8 +99,14 @@ export const getStreamUrl = url => {
 
 export const downloadVideo = (url, targetFolder, options = {}) => {
     return new Promise(resolve => {
-        console.log('Youtube-dl url:', url, targetFolder, path.join('./', targetFolder))
+        console.log('Youtube-dl cmd Path: ', youtubeDlPath)
+        console.log('Youtube-dl url:', url, targetFolder)
 
+        if (!targetFolder) {
+            targetFolder = appPath.downloads
+        }
+        targetFolder = path.resolve(targetFolder)
+        
         mkdirp.sync(targetFolder)
 
         let message = []
@@ -112,7 +121,7 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
         }
         
         const dl = spawn(
-            'youtube-dl',
+            youtubeDlPath,
             [
                 ...workaroundsOptions,
                 
@@ -125,7 +134,7 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
                 url,
             ],
             {
-                cwd: path.join('./', targetFolder),
+                cwd: targetFolder,
             }
         )
 
@@ -150,8 +159,12 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
 
 export const getVideoInfo = (url, targetFolder, options = {}) => {
     return new Promise(resolve => {
-        console.log('Youtube-dl url:', url, path.join('./', targetFolder))
-
+        console.log('Youtube-dl url:', url, targetFolder)
+        if (!targetFolder) {
+            targetFolder = appPath.downloads
+        }
+        targetFolder = path.resolve(targetFolder)
+        
         mkdirp.sync(targetFolder)
         
         let message = ''
@@ -162,7 +175,7 @@ export const getVideoInfo = (url, targetFolder, options = {}) => {
         }
 
         const dl = spawn(
-            'youtube-dl',
+            youtubeDlPath,
             [
                 ...workaroundsOptions,
                 ...simulationOptions,
@@ -172,7 +185,7 @@ export const getVideoInfo = (url, targetFolder, options = {}) => {
                 url,
             ],
             {
-                cwd: path.join('./', targetFolder),
+                cwd: targetFolder,
             }
         )
 

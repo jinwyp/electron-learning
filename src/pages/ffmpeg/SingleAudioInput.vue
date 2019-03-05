@@ -18,7 +18,7 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="输出文件夹路径:">
+                <el-form-item label="保存路径:">
                     <el-input v-model="audioForm.targetFilePath" placeholder="默认为源文件相同文件夹" :readonly="isMas()">
                         <tk-select-directory v-if="isRenderer()" slot="append" @selected="onDirectorySelected" />
                     </el-input>

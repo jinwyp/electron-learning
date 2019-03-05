@@ -78,7 +78,7 @@
     
 import { remote } from 'electron'
 
-const { Menu, app } = remote
+const { Menu } = remote
 
 export default {
     data () {
@@ -123,10 +123,7 @@ export default {
     created: function () {
         // `this` points to the vm instance
         // this.initMenu()
-        console.log(app.getPath('userData'))
-        console.log(app.getPath('home'))
-        console.log(app.getPath('appData'))
-        console.log(app.getAppPath())
+
     },
     methods: {
         selectMenu (menu, subMenu) {

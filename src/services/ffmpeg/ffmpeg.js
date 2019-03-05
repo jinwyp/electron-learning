@@ -1,8 +1,18 @@
 import path from 'path'
 import { spawn } from 'child_process'
 import mkdirp from 'mkdirp'
+import { getAppRootDir } from '../../utils/appConfig'
+
+
 
 // https://linuxconfig.org/ffmpeg-audio-format-conversions
+
+
+
+const ffmpegPath = path.join(getAppRootDir() + '/ffmpeg')
+
+
+
 
 const networkOptions = [
     '--proxy',
@@ -24,9 +34,11 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
             targetFileFullPath = path.dirname(sourceFile)
         }
 
-        console.log('FFMPEG To MP3: ', sourceFilePath, targetFolder, sourceFile)
+        console.log('FFMPEG cmd Path: ', ffmpegPath)
+        console.log('FFMPEG To MP3 Input Info: ', sourceFilePath, targetFolder)
         
-        console.log('Audio File Info: ', sourceFileFullName, targetFileFullName, targetFileFullPath, path.join('./', targetFolder), path.resolve('./'))
+        console.log('Source Info: ', sourceFile, sourceFileBasename, sourceFileExt, sourceFileFullName, path.resolve('./'))
+        console.log('Target Info: ', targetFileFullPath, targetFileFullName, path.join('./', targetFolder))
         
         mkdirp.sync(targetFolder)
         
@@ -35,7 +47,7 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
         
         
         const dl = spawn(
-            'ffmpeg',
+            ffmpegPath,
             [
                 '-y',
                 
@@ -85,7 +97,7 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
 
 export const getAudioInfo = (url, targetFolder, options = {}) => {
     return new Promise(resolve => {
-        console.log('Youtube-dl url:', url, path.join('./', targetFolder))
+        console.log('FFMPEG url:', url, path.join('./', targetFolder))
 
         mkdirp.sync(targetFolder)
         
@@ -97,7 +109,7 @@ export const getAudioInfo = (url, targetFolder, options = {}) => {
         }
 
         const dl = spawn(
-            'youtube-dl',
+            ffmpegPath,
             [
                 ...networkOptions,
 
