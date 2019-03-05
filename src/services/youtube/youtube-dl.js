@@ -159,6 +159,7 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
 
 export const getVideoInfo = (url, targetFolder, options = {}) => {
     return new Promise(resolve => {
+        console.log('Youtube-dl cmd Path: ', youtubeDlPath)
         console.log('Youtube-dl url:', url, targetFolder)
         if (!targetFolder) {
             targetFolder = appPath.downloads

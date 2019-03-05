@@ -9,7 +9,7 @@ import path from 'path'
 
 const remote = is.renderer() ? require('electron').remote : { app: {} }
 
-const appRootDir = path.join(path.dirname(remote.app.getAppPath()))
+const appRootDir = path.dirname(remote.app.getAppPath())
 
 
 console.log('===== NODE_ENV : ', process.env.NODE_ENV, remote.app.isPackaged)
@@ -62,10 +62,10 @@ export function getPlatform () {
 
 // https://stackoverflow.com/questions/33152533/bundling-precompiled-binary-into-electron-app/45152204
 export function getAppRootDir () {
-    let resultUrl = path.join(appRootDir + '/resources/' + getPlatform())
+    let resultUrl = path.join(appRootDir, '/resources/', getPlatform())
 
     if (process.env.NODE_ENV === 'production' && remote.app.isPackaged) {
-        resultUrl = path.join(appRootDir + '..' + '/Resources/bin')
+        resultUrl = path.join(appRootDir, '..', '/Resources/bin')
     }
     
     return resultUrl

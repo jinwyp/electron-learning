@@ -61,7 +61,12 @@
                             <span v-if="scope.row.vcodec !== 'none' "> {{ scope.row.filesize | sizeDisplay }} </span>
                         </template>
                     </el-table-column>
-
+                    <el-table-column prop="ext" label="是否下载" width="80">
+                        <template slot-scope="scope">
+                            <el-tag v-if="videoDownloadLogsObject[videoForm.videoId + '_' + scope.row.format_id]" type="success">已下载</el-tag>
+                            <el-tag v-if="!videoDownloadLogsObject[videoForm.videoId + '_' + scope.row.format_id]" type="warning">未下载</el-tag>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="ext" label="操作" width="80">
                         <template slot-scope="scope">
                             <el-button type="primary" plain size="mini" @click="onSubmit('download', scope.row)">下载</el-button>
@@ -135,6 +140,7 @@ export default {
             downloadError: [],
             
             videoForm: {
+                videoId: '',
                 videoUrl: '',
                 videoTitle: '',
                 socks5: '',
@@ -153,17 +159,22 @@ export default {
 
             videoFormatList: [],
             videoInfo: {},
+            videoDownloadLogsObject: {},
+            
             
         }
     },
     created: function () {
         // `this` points to the vm instance
-        console.log('Vue Component created: ')
+        
 
         if (!this.isCreate) {
             if (this.$route.params && this.$route.params.videoId) {
+                this.videoForm.videoId = this.$route.params.videoId
+                console.log('VideoId: ', this.videoForm.videoId)
+                
                 DBVideos.get(this.$route.params.videoId).then((doc) => {
-                    console.log('Fetch doc: ', doc)
+                    console.log('Fetch DBVideos doc: ', doc)
                     
                     if (doc && doc.displayId) {
                         this.videoInfo = JSON.parse(doc.jsonInfo)
@@ -172,6 +183,8 @@ export default {
                         this.videoForm.videoUrl = doc.webPageUrl
                     }
                 }).catch(httpErrorHandler)
+
+                this.getIsDownloadLogs(this.$route.params.videoId)
             }
         }
     },
@@ -197,11 +210,11 @@ export default {
             
             const tempVideoIdIndex = this.videoForm.videoUrl.indexOf('?v=')
             const tempVideoId = this.videoForm.videoUrl.substr(tempVideoIdIndex + 3, 11)
-            const savePath = this.videoForm.downloadSavePath + '/' + tempVideoId
+            this.videoForm.videoId = 'youtube_' + tempVideoId
+            const savePath = this.videoForm.downloadSavePath + '/' + tempVideoId + '/' + formatData.format_id
 
             
             console.log('VideoId: ', tempVideoId, tempVideoIdIndex, this.youtubeDlOptions.videoFormatOptions)
-
             
             if (type === 'download') {
                 if (formatData.format_id) {
@@ -236,11 +249,17 @@ export default {
                         url: formatData.url,
                         jsonInfo: JSON.stringify(formatData),
                         createTime: new Date().toJSON(),
+                        isDownload: true,
                     }).then((doc) => {
                         console.log('Doc Saved: ', doc)
+                        this.getIsDownloadLogs(tempVideoId)
                     }).catch(httpErrorHandler)
-                })
-            } else {
+                }).catch(httpErrorHandler)
+            }
+
+            if (type === 'info') {
+                this.getIsDownloadLogs(tempVideoId)
+                
                 DBVideos.get('youtube_' + tempVideoId).then((doc) => {
                     if (doc && doc.displayId) {
                         this.videoInfo = JSON.parse(doc.jsonInfo)
@@ -341,6 +360,26 @@ export default {
                 
                 this.videoFormatList = [...tempVideoWithAudio, ...tempVideo, ...tempAudio]
             }
+        },
+
+        getIsDownloadLogs (videoId) {
+            this.videoDownloadLogsObject = {}
+            
+            DBVideoDownloadLogs.find({
+                selector: {
+                    _id: { $regex: videoId },
+                },
+                limit: 100,
+
+            }).then((result) => {
+                console.log('当前已下载数据: ', result)
+                
+                if (Array.isArray(result.docs)) {
+                    result.docs.forEach((item) => {
+                        this.$set(this.videoDownloadLogsObject, item._id, item.isDownload || false)
+                    })
+                }
+            }).catch(httpErrorHandler)
         },
     },
 }
