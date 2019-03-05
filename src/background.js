@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 
-import {app, protocol, BrowserWindow} from 'electron'
+import {app, protocol, Menu, BrowserWindow} from 'electron'
 import {createProtocol, installVueDevtools} from 'vue-cli-plugin-electron-builder/lib'
 
 const pathIndex = path.join(__dirname, 'index.html')
@@ -42,6 +42,41 @@ function createWindow() {
         // 与此同时，你应该删除相应的元素。
         mainWindow = null
     })
+
+
+    const templateMenu = [
+        {
+            label: "Application",
+            submenu: [
+                { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
+                { type: "separator" },
+                { label: 'Settings', accelerator: 'CmdOrCtrl+,' },
+                { type: "separator" },
+                { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+            ]
+        }, 
+        {
+            label: "Edit",
+            submenu: [
+                { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+                { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+                { type: "separator" },
+                { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+                { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+                { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+                { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+            ]
+        },
+        {
+            label: "View",
+            submenu: [
+                { label: "Reload", accelerator: "CmdOrCtrl+R", selector: "reload:" },
+            ]
+        },
+        
+    ];
+
+    Menu.setApplicationMenu(Menu.buildFromTemplate(templateMenu));
 }
 
 // Quit when all windows are closed.
