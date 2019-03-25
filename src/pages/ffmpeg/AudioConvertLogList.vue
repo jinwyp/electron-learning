@@ -24,14 +24,12 @@
                     <template slot-scope="scope">
                         <span> {{ scope.row.sourceFilename }} </span>
                         <br>
-                        <br>
                         <span>( {{ scope.row._id }} )</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="targetFilename" label="转换后文件">
                     <template slot-scope="scope">
                         <span> {{ scope.row.targetFilename }} </span>
-                        <br>
                         <br>
                         <span>( {{ scope.row.targetFullPath }} )</span>
                     </template>
@@ -65,7 +63,7 @@ export default {
             audioList: [],
             pagination: {
                 pageNo: 1,
-                pageSize: 100,
+                pageSize: 50,
                 total: 100,
             },
 
@@ -87,40 +85,44 @@ export default {
             this.getAudioList()
         },
 
-        getAudioList () {
-            this.audioList = []
-
-            DBAudioConvertLogs.find({
-                selector: {
-                    sourceFullPath: { $regex: this.searchQuery.sourceFullPath },
-                    _id: { $regex: this.searchQuery.id },
-                },
-                limit: this.pagination.pageSize,
-                skip: (this.pagination.pageNo - 1) * this.pagination.pageSize,
-
-            }).then((result) => {
-                console.log('当前列表数据: ', result)
-                this.audioList = result.docs
-            }).catch(httpErrorHandler)
-        },
-
         searchForm () {
             this.pagination.pageNo = 1
             this.getAudioList()
         },
+        
+        getAudioList () {
+            this.audioList = []
+            
+            const query = {}
+            
+            if (this.searchQuery.sourceFullPath) {
+                query.sourceFullPath = this.searchQuery.sourceFullPath
+            }
+            if (this.searchQuery.id) {
+                query._id = this.searchQuery.id
+            }
+            
+            DBAudioConvertLogs.cfind(query).skip((this.pagination.pageNo - 1) * this.pagination.pageSize).limit(this.pagination.pageSize).exec().then((result) => {
+                console.log('当前音频列表数据: ', result)
+                this.audioList = result
+            }).catch(httpErrorHandler)
+
+            DBAudioConvertLogs.count(query).then((result) => {
+                console.log('当前音频列表数量: ', result)
+                this.pagination.total = result
+            }).catch(httpErrorHandler)
+        },
 
         delAudioRecord (id) {
             console.log(id)
-            DBAudioConvertLogs.get(id).then((doc) => {
-                return DBAudioConvertLogs.remove(doc)
-            }).then((result) => {
+            DBAudioConvertLogs.remove({ _id: id }).then((result) => {
                 this.getAudioList()
                 this.$notify.success({ title: '操作成功', message: '' })
             }).catch(httpErrorHandler)
         },
 
         gotoSingleAudio (row) {
-            console.log('row: ', row)
+            console.log('Selected row: ', row)
             this.$router.push({ name: 'editAudio', params: { audioId: row._id } })
         },
     },

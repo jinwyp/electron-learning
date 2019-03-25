@@ -69,7 +69,7 @@ export default {
             videoList: [],
             pagination: {
                 pageNo: 1,
-                pageSize: 100,
+                pageSize: 50,
                 total: 100,
             },
 
@@ -90,41 +90,38 @@ export default {
             console.log('当前分页 Pagination No: ', currentPageNo)
             this.getVideoList()
         },
-
-        getVideoList () {
-            this.videoList = []
-            // this.searchQuery.include_docs = true
-            //
-            // DBVideos.allDocs(this.searchQuery).then((result) => {
-            //     console.log('当前列表数据: ', result)
-            //     this.videoList = result.rows
-            //     console.log('当前列表数据: ', this.videoList)
-            // }).catch(httpErrorHandler)
-
-            DBVideos.find({
-                selector: {
-                    title: { $regex: this.searchQuery.title },
-                    _id: { $regex: 'youtube_' + this.searchQuery.id },
-                },
-                limit: this.pagination.pageSize,
-                skip: (this.pagination.pageNo - 1) * this.pagination.pageSize,
-
-            }).then((result) => {
-                console.log('当前列表数据: ', result)
-                this.videoList = result.docs
-            }).catch(httpErrorHandler)
-        },
-
+        
         searchForm () {
             this.pagination.pageNo = 1
             this.getVideoList()
         },
+        
+        getVideoList () {
+            this.videoList = []
+
+            const query = {}
+
+            if (this.searchQuery.title) {
+                query.title = this.searchQuery.title
+            }
+            if (this.searchQuery.id) {
+                query._id = this.searchQuery.id
+            }
+            
+            DBVideos.cfind(query).skip((this.pagination.pageNo - 1) * this.pagination.pageSize).limit(this.pagination.pageSize).exec().then((result) => {
+                console.log('当前Youtube视频列表数据: ', result)
+                this.videoList = result
+            }).catch(httpErrorHandler)
+
+            DBVideos.count(query).then((result) => {
+                console.log('当前Youtube视频列表数量: ', result)
+                this.pagination.total = result
+            }).catch(httpErrorHandler)
+        },
+
 
         delVideoRecord (id) {
-            console.log(id)
-            DBVideos.get(id).then((doc) => {
-                return DBVideos.remove(doc)
-            }).then((result) => {
+            DBVideos.remove({ _id: id }).then((result) => {
                 this.getVideoList()
                 this.$notify.success({ title: '操作成功', message: '' })
             }).catch(httpErrorHandler)
@@ -132,11 +129,11 @@ export default {
 
         gotoSingleVideo (row) {
             console.log('row: ', row)
-            this.$router.push({ name: 'editVideo', params: { videoId: row._id } })
+            this.$router.push({ name: 'editVideo', params: { videoId: row.youtubeId } })
         },
 
         gotoDownloadLogs (row) {
-            this.$router.push({ name: 'videoDownloadLogs', params: { videoId: row._id } })
+            this.$router.push({ name: 'videoDownloadLogs', params: { videoId: row.youtubeId } })
         },
     },
 }

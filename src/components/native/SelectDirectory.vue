@@ -7,7 +7,15 @@ const { dialog } = require('electron').remote
 
 export default {
     name: 'TkSelectDirectory',
+    model: {
+        prop: 'path',
+        event: 'selected',
+    },
     props: {
+        path: {
+            type: String,
+            default: '',
+        },
     },
     methods: {
         onFolderClick: function () {
@@ -32,12 +40,14 @@ export default {
             
             
             dialog.showOpenDialog(options, (filePaths) => {
-                console.log('filePaths: ', filePaths)
+                console.log('TkSelectDirectory Selected filePaths: ', filePaths)
                 
                 if (!filePaths) {
                     return
                 }
                 const [path] = filePaths
+                
+                console.log('TkSelectDirectory Selected first Path: ', path)
                 self.$emit('selected', path)
             })
         },

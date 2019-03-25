@@ -58,7 +58,7 @@ export default {
             videoDownloadLogs: [],
             pagination: {
                 pageNo: 1,
-                pageSize: 100,
+                pageSize: 50,
                 total: 100,
             },
 
@@ -84,35 +84,38 @@ export default {
             console.log('当前分页 Pagination No: ', currentPageNo)
             this.getVideoDownloadLogs()
         },
-
-        getVideoDownloadLogs () {
-            this.videoDownloadLogs = []
-            
-            DBVideoDownloadLogs.find({
-                selector: {
-                    title: { $regex: this.searchQuery.title },
-                    _id: { $regex: this.searchQuery.id },
-                },
-                limit: this.pagination.pageSize,
-                skip: (this.pagination.pageNo - 1) * this.pagination.pageSize,
-                
-            }).then((result) => {
-                console.log('当前列表数据: ', result)
-                this.videoDownloadLogs = result.docs
-                console.log('当前列表数据: ', this.videoDownloadLogs)
-            }).catch(httpErrorHandler)
-        },
-
         searchForm () {
             this.pagination.pageNo = 1
             this.getVideoDownloadLogs()
         },
+        
+        getVideoDownloadLogs () {
+            this.videoDownloadLogs = []
+
+            const query = {}
+
+            if (this.searchQuery.title) {
+                query.title = this.searchQuery.title
+            }
+            if (this.searchQuery.id) {
+                query.youtubeId = this.searchQuery.id
+            }
+            
+            DBVideoDownloadLogs.cfind(query).skip((this.pagination.pageNo - 1) * this.pagination.pageSize).limit(this.pagination.pageSize).exec().then((result) => {
+                console.log('当前Youtube 已下载列表数据: ', result)
+                this.videoDownloadLogs = result
+            }).catch(httpErrorHandler)
+
+            DBVideoDownloadLogs.count(query).then((result) => {
+                console.log('当前Youtube 已下载列表数量: ', result)
+                this.pagination.total = result
+            }).catch(httpErrorHandler)
+        },
+
+
 
         delVideoRecord (id) {
-            console.log(id)
-            DBVideoDownloadLogs.get(id).then((doc) => {
-                return DBVideoDownloadLogs.remove(doc)
-            }).then((result) => {
+            DBVideoDownloadLogs.remove({ _id: id }).then((result) => {
                 this.getVideoDownloadLogs()
                 this.$notify.success({ title: '操作成功', message: '' })
             }).catch(httpErrorHandler)

@@ -57,8 +57,8 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
                 '-acodec',
                 'libmp3lame',
 
-                '-ab',
-                '192k',
+                '-b:a',
+                '320k',
 
                 targetFileFullName,
             ],

@@ -3,7 +3,7 @@
         <el-col :span="24">
             <el-form ref="form" :model="audioForm" label-width="140px">
                 <el-form-item label="选择要转换的文件:">
-                    <el-button type="primary" size="small" @click="openFile('originalFile')">选择文件</el-button>
+                    <el-button type="primary" size="small" @click="openFile()">选择文件</el-button>
                     
                     <span> {{ audioForm.originalFilePath }} </span>
                 </el-form-item>
@@ -20,7 +20,7 @@
 
                 <el-form-item label="保存路径:">
                     <el-input v-model="audioForm.targetFilePath" placeholder="默认为源文件相同文件夹" :readonly="isMas()">
-                        <tk-select-directory v-if="isRenderer()" slot="append" @selected="onDirectorySelected" />
+                        <tk-select-directory v-if="isRenderer()" slot="append" v-model="audioForm.targetFilePath" />
                     </el-input>
                 </el-form-item>
                 
@@ -101,12 +101,6 @@ export default {
                 targetFilePath: '',
             },
             
-            FFMPEGOptions: {
-                networkOptions: {
-                    '--proxy': 'socks5://127.0.0.1:1086/',
-                },
-            },
-
             audioInfo: {},
             downloadLog: {},
             downloadError: {},
@@ -119,8 +113,10 @@ export default {
 
         if (!this.isCreate) {
             if (this.$route.params && this.$route.params.audioId) {
-                DBAudioConvertLogs.get(this.$route.params.audioId).then((doc) => {
-                    console.log('Fetch doc: ', doc)
+                DBAudioConvertLogs.findOne({
+                    _id: this.$route.params.audioId,
+                }).then((doc) => {
+                    console.log('Fetch Edit doc: ', doc)
 
                     if (doc && doc._id) {
                         this.audioInfo = doc
@@ -134,9 +130,6 @@ export default {
         isRenderer: is.renderer,
         isMas: is.mas,
 
-        onDirectorySelected (dir) {
-            this.audioForm.targetFilePath = dir
-        },
         
         onSubmit (type, formatData) {
             console.log('audioForm: ', this.audioForm)
@@ -153,22 +146,20 @@ export default {
             
             // const savePath = this.savePath + '/' + this.audioForm.targetFormat
             
-            DBAudioConvertLogs.get(this.audioForm.originalFilePath).then((doc) => {
-                console.log('Audio Converted File: ', doc)
+            DBAudioConvertLogs.findOne({ _id: this.audioForm.originalFilePath }).then((doc) => {
+                console.log('Find Audio File Already Converted : ', doc)
                 if (doc && doc._id) {
                     this.audioInfo = doc
                     this.isShowLoading = false
-                }
-            }).catch((error) => {
-                if (error.status === 404 && error.name === 'not_found') {
-                    console.log('Audio FFMPEGOptions: ', this.FFMPEGOptions)
-                    
+                } else {
+                    console.log('New Audio Converted: ', this.audioForm.originalFilePath)
+
                     convertAudioToMP3(this.audioForm.originalFilePath, this.audioForm.targetFilePath).then((result) => {
                         this.audioInfo = result.message
                         this.downloadError = result.error
                         this.isShowLoading = false
 
-                        DBAudioConvertLogs.put({
+                        return DBAudioConvertLogs.insert({
                             _id: result.message.sourceFullPath,
                             sourceFullPath: result.message.sourceFullPath,
                             sourceFilename: result.message.sourceFilename,
@@ -176,24 +167,18 @@ export default {
                             targetFilename: result.message.targetFilename,
                             targetFileExt: result.message.targetFileExt,
                             targetFullPath: result.message.targetFullPath,
-                            
+
                             createTime: new Date().toJSON(),
-                        }).then((doc) => {
-                            console.log('Doc Saved: ', doc)
-                        }).catch(httpErrorHandler)
+                        })
+                    }).then((doc) => {
+                        console.log('Doc Saved: ', doc)
                     }).catch(httpErrorHandler)
                 }
             }).catch(httpErrorHandler)
         },
         
-        
-        onReset () {
-            /* Reset our form values */
-            this.audioForm.targetFormat = ''
-        },
 
-
-        openFile (type) {
+        openFile () {
             if (this.isHideOpenFileDialog) {
                 this.isHideOpenFileDialog = false
                 
@@ -205,17 +190,15 @@ export default {
                 }
                 
                 dialog.showOpenDialog(options, (files) => {
-                    console.log('files: ', files)
+                    console.log('Selected files: ', files)
                     this.isHideOpenFileDialog = true
 
-                    if (files === undefined) {
+                    if (!files) {
                         return
                     }
 
                     if (Array.isArray(files)) {
-                        if (type === 'originalFile') {
-                            this.audioForm.originalFilePath = files[0]
-                        }
+                        this.audioForm.originalFilePath = files[0]
                     }
                 })
             } else {

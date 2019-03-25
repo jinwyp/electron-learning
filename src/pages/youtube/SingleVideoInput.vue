@@ -13,7 +13,7 @@
 
                 <el-form-item label="保存路径:">
                     <el-input v-model="videoForm.downloadSavePath" placeholder="默认为用户下载目录">
-                        <tk-select-directory slot="append" @selected="onDirectorySelected" />
+                        <tk-select-directory slot="append" v-model="videoForm.downloadSavePath" />
                     </el-input>
                 </el-form-item>
             </el-form>
@@ -63,8 +63,8 @@
                     </el-table-column>
                     <el-table-column prop="ext" label="是否下载" width="80">
                         <template slot-scope="scope">
-                            <el-tag v-if="videoDownloadLogsObject[videoForm.videoId + '_' + scope.row.format_id]" type="success">已下载</el-tag>
-                            <el-tag v-if="!videoDownloadLogsObject[videoForm.videoId + '_' + scope.row.format_id]" type="warning">未下载</el-tag>
+                            <el-tag v-if="videoDownloadLogsObject['youtube_' + currentVideoId + '_' + scope.row.format_id]" type="success">已下载</el-tag>
+                            <el-tag v-if="!videoDownloadLogsObject['youtube_' + currentVideoId + '_' + scope.row.format_id]" type="warning">未下载</el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column prop="ext" label="操作" width="80">
@@ -138,9 +138,9 @@ export default {
             
             downloadLog: [],
             downloadError: [],
+            currentVideoId: [],
             
             videoForm: {
-                videoId: '',
                 videoUrl: '',
                 videoTitle: '',
                 socks5: '',
@@ -166,15 +166,16 @@ export default {
     },
     created: function () {
         // `this` points to the vm instance
-        
 
         if (!this.isCreate) {
             if (this.$route.params && this.$route.params.videoId) {
-                this.videoForm.videoId = this.$route.params.videoId
-                console.log('VideoId: ', this.videoForm.videoId)
+                this.currentVideoId = this.$route.params.videoId
+                console.log('Current VideoId: ', this.currentVideoId)
                 
-                DBVideos.get(this.$route.params.videoId).then((doc) => {
-                    console.log('Fetch DBVideos doc: ', doc)
+                DBVideos.findOne({
+                    _id: 'youtube_' + this.$route.params.videoId,
+                }).then((doc) => {
+                    console.log('Fetch DBVideos Edit doc: ', doc)
                     
                     if (doc && doc.displayId) {
                         this.videoInfo = JSON.parse(doc.jsonInfo)
@@ -191,10 +192,22 @@ export default {
     
     
     methods: {
-        onDirectorySelected (dir) {
-            this.videoForm.downloadSavePath = dir
-        },
+        getIsDownloadLogs (videoId) {
+            this.videoDownloadLogsObject = {}
 
+            DBVideoDownloadLogs.find({
+                youtubeId: videoId,
+            }).then((result) => {
+                console.log('当前视频已下载数据: ', videoId, result)
+
+                if (Array.isArray(result)) {
+                    result.forEach((item) => {
+                        this.$set(this.videoDownloadLogsObject, item._id, item.isDownload || false)
+                    })
+                }
+            }).catch(httpErrorHandler)
+        },
+        
         
         onSubmit (type, formatData) {
             console.log('VideoForm: ', this.videoForm)
@@ -227,11 +240,12 @@ export default {
                 downloadVideo(this.videoForm.videoUrl, targetPath, this.youtubeDlOptions).then((result) => {
                     this.downloadLog = result.message
                     this.downloadError = result.error
-                    console.log('result: ', result)
+                    console.log('Download youtube result: ', result)
                     this.isShowLoading = false
 
-                    DBVideoDownloadLogs.put({
+                    return DBVideoDownloadLogs.insert({
                         _id: 'youtube_' + tempVideoId + '_' + formatData.format_id,
+                        youtubeId: tempVideoId,
                         webPageUrl: this.videoInfo.webpage_url,
                         title: this.videoInfo.title,
                         formatId: formatData.format_id,
@@ -253,31 +267,33 @@ export default {
                         jsonInfo: JSON.stringify(formatData),
                         createTime: new Date().toJSON(),
                         isDownload: true,
-                    }).then((doc) => {
-                        console.log('Doc Saved: ', doc)
-                        this.getIsDownloadLogs(tempVideoId)
-                    }).catch(httpErrorHandler)
+                    })
+                }).then((doc) => {
+                    console.log('Doc Saved: ', doc)
+                    this.getIsDownloadLogs(tempVideoId)
                 }).catch(httpErrorHandler)
             }
 
             if (type === 'info') {
                 this.getIsDownloadLogs(tempVideoId)
                 
-                DBVideos.get('youtube_' + tempVideoId).then((doc) => {
+                DBVideos.findOne({
+                    _id: 'youtube_' + tempVideoId,
+                }).then((doc) => {
                     if (doc && doc.displayId) {
                         this.videoInfo = JSON.parse(doc.jsonInfo)
                         this.getSortFormatList(this.videoInfo.formats)
                         this.isShowLoading = false
-                    }
-                }).catch((error) => {
-                    if (error.status === 404 && error.name === 'not_found') {
+                    } else {
                         getVideoInfo(this.videoForm.videoUrl, savePath, this.youtubeDlOptions).then((result) => {
                             this.videoInfo = result.message
                             this.downloadError = result.error
+                            this.getSortFormatList(this.videoInfo.formats)
                             this.isShowLoading = false
-                            
-                            DBVideos.put({
+
+                            return DBVideos.insert({
                                 _id: 'youtube_' + tempVideoId,
+                                youtubeId: tempVideoId,
                                 url: this.videoForm.videoUrl,
                                 title: result.message.title,
                                 fullTitle: result.message.fulltitle,
@@ -299,11 +315,10 @@ export default {
                                 viewCount: result.message.view_count,
                                 jsonInfo: JSON.stringify(result.message),
                                 createTime: new Date().toJSON(),
-                            }).then((doc) => {
-                                console.log('Doc Saved: ', doc)
-                            }).catch(httpErrorHandler)
-
-                            this.getSortFormatList(this.videoInfo.formats)
+                            })
+                            
+                        }).then((doc) => {
+                            console.log('Doc Saved: ', doc)
                         }).catch(httpErrorHandler)
                     }
                 }).catch(httpErrorHandler)
@@ -318,6 +333,7 @@ export default {
             this.downloadError = []
         },
 
+        
         getSortFormatList (videoFormatList = []) {
             const tempAudio = []
             const tempVideo = []
@@ -365,25 +381,7 @@ export default {
             }
         },
 
-        getIsDownloadLogs (videoId) {
-            this.videoDownloadLogsObject = {}
-            
-            DBVideoDownloadLogs.find({
-                selector: {
-                    _id: { $regex: videoId },
-                },
-                limit: 100,
 
-            }).then((result) => {
-                console.log('当前已下载数据: ', result)
-                
-                if (Array.isArray(result.docs)) {
-                    result.docs.forEach((item) => {
-                        this.$set(this.videoDownloadLogsObject, item._id, item.isDownload || false)
-                    })
-                }
-            }).catch(httpErrorHandler)
-        },
     },
 }
 </script>
