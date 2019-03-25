@@ -316,7 +316,6 @@ export default {
                                 jsonInfo: JSON.stringify(result.message),
                                 createTime: new Date().toJSON(),
                             })
-                            
                         }).then((doc) => {
                             console.log('Doc Saved: ', doc)
                         }).catch(httpErrorHandler)
