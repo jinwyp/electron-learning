@@ -143,13 +143,13 @@ export default {
             videoForm: {
                 videoUrl: '',
                 videoTitle: '',
-                socks5: '',
+                socks5: 'socks5://127.0.0.1:1086/',
                 downloadSavePath: appPath.downloads,
             },
             
             youtubeDlOptions: {
                 networkOptions: {
-                    '--proxy': 'socks5://127.0.0.1:1086/',
+                    '--proxy': '',
                 },
 
                 videoFormatOptions: {
@@ -227,7 +227,9 @@ export default {
             this.videoForm.videoId = 'youtube_' + tempVideoId
             const savePath = this.videoForm.downloadSavePath + '/' + tempVideoId
 
-            
+            if (this.videoForm.socks5) {
+                this.youtubeDlOptions.networkOptions['--proxy'] = this.videoForm.socks5
+            }
             console.log('VideoId: ', tempVideoId, tempVideoIdIndex, this.youtubeDlOptions.videoFormatOptions)
             
             if (type === 'download') {
