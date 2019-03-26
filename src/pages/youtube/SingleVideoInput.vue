@@ -242,42 +242,50 @@ export default {
                 downloadVideo(this.videoForm.videoUrl, targetPath, this.youtubeDlOptions).then((result) => {
                     this.downloadLog = result.message
                     this.downloadError = result.error
-                    console.log('Download youtube result: ', result)
                     this.isShowLoading = false
+                    console.log('Download youtube result: ', result)
 
-                    return DBVideoDownloadLogs.insert({
-                        _id: 'youtube_' + tempVideoId + '_' + formatData.format_id,
-                        youtubeId: tempVideoId,
-                        webPageUrl: this.videoInfo.webpage_url,
-                        title: this.videoInfo.title,
-                        formatId: formatData.format_id,
-                        formatNote: formatData.format_note,
-                        format: formatData.format,
-                        ext: formatData.ext,
-                        container: formatData.container,
-                        width: formatData.width,
-                        height: formatData.height,
-                        vcodec: formatData.vcodec,
-                        acodec: formatData.acodec,
-                        fileSize: formatData.filesize,
-                        resolution: formatData.resolution || '',
-                        tbr: formatData.tbr,
-                        vbr: formatData.vbr,
-                        abr: formatData.abr,
-                        protocol: formatData.protocol,
-                        url: formatData.url,
-                        jsonInfo: JSON.stringify(formatData),
-                        createTime: new Date().toJSON(),
-                        isDownload: true,
-                    })
-                }).then((doc) => {
-                    console.log('Doc Saved: ', doc)
-                    this.getIsDownloadLogs(tempVideoId)
-                    this.$notify.success({
-                        title: '操作成功!',
-                        message: '',
-                        duration: notifyDuration,
-                    })
+                    if (result.code === 0) {
+                        DBVideoDownloadLogs.insert({
+                            _id: 'youtube_' + tempVideoId + '_' + formatData.format_id,
+                            youtubeId: tempVideoId,
+                            webPageUrl: this.videoInfo.webpage_url,
+                            title: this.videoInfo.title,
+                            formatId: formatData.format_id,
+                            formatNote: formatData.format_note,
+                            format: formatData.format,
+                            ext: formatData.ext,
+                            container: formatData.container,
+                            width: formatData.width,
+                            height: formatData.height,
+                            vcodec: formatData.vcodec,
+                            acodec: formatData.acodec,
+                            fileSize: formatData.filesize,
+                            resolution: formatData.resolution || '',
+                            tbr: formatData.tbr,
+                            vbr: formatData.vbr,
+                            abr: formatData.abr,
+                            protocol: formatData.protocol,
+                            url: formatData.url,
+                            jsonInfo: JSON.stringify(formatData),
+                            createTime: new Date().toJSON(),
+                            isDownload: true,
+                        }).then((doc) => {
+                            console.log('Doc Saved: ', doc)
+                            this.getIsDownloadLogs(tempVideoId)
+                            this.$notify.success({
+                                title: '操作成功!',
+                                message: '',
+                                duration: notifyDuration,
+                            })
+                        }).catch(httpErrorHandler)
+                    } else {
+                        this.$notify.error({
+                            title: '下载youtube视频失败!',
+                            message: '请检查网络或代理设置!',
+                            duration: notifyDuration,
+                        })
+                    }
                 }).catch(httpErrorHandler)
             }
 
@@ -297,10 +305,10 @@ export default {
                             this.downloadError = result.error
                             this.isShowLoading = false
                             
-                            if (result.message && result.message.title) {
+                            if (result.code === 0 && result.message && result.message.title) {
                                 this.getSortFormatList(this.videoInfo.formats)
                                 
-                                return DBVideos.insert({
+                                DBVideos.insert({
                                     _id: 'youtube_' + tempVideoId,
                                     youtubeId: tempVideoId,
                                     url: this.videoForm.videoUrl,
@@ -324,13 +332,16 @@ export default {
                                     viewCount: result.message.view_count,
                                     jsonInfo: JSON.stringify(result.message),
                                     createTime: new Date().toJSON(),
-                                })
+                                }).then((doc) => {
+                                    console.log('Doc Saved: ', doc)
+                                }).catch(httpErrorHandler)
                             } else {
-                                return result
+                                this.$notify.error({
+                                    title: '获取youtube视频信息失败!',
+                                    message: '',
+                                    duration: notifyDuration,
+                                })
                             }
-                            
-                        }).then((doc) => {
-                            console.log('Doc Saved: ', doc)
                         }).catch(httpErrorHandler)
                     }
                 }).catch(httpErrorHandler)
