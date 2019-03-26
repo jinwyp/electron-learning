@@ -1,6 +1,6 @@
 # Electron-learning
 Learning demo for electron and nodejs
-Download youtube videos and convert audio to mp3 tool
+A cross platform tool. Download youtube videos and convert audio to mp3 tool
 
 
 ### 安装环境 Mac
