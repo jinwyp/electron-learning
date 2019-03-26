@@ -290,34 +290,40 @@ export default {
                         getVideoInfo(this.videoForm.videoUrl, savePath, this.youtubeDlOptions).then((result) => {
                             this.videoInfo = result.message
                             this.downloadError = result.error
-                            this.getSortFormatList(this.videoInfo.formats)
                             this.isShowLoading = false
-
-                            return DBVideos.insert({
-                                _id: 'youtube_' + tempVideoId,
-                                youtubeId: tempVideoId,
-                                url: this.videoForm.videoUrl,
-                                title: result.message.title,
-                                fullTitle: result.message.fulltitle,
-                                displayId: result.message.display_id,
-                                duration: result.message.duration,
-                                thumbnail: result.message.thumbnail,
-                                webPageUrl: result.message.webpage_url,
-                                uploadDate: result.message.upload_date,
-                                uploader: result.message.uploader,
-                                uploaderId: result.message.uploader_id,
-                                uploaderUrl: result.message.uploader_url,
-                                channelId: result.message.channel_id,
-                                channelUrl: result.message.channel_url,
-                                categories: result.message.categories,
-                                tags: result.message.tags,
-                                description: result.message.description,
-                                dislikeCount: result.message.dislike_count,
-                                likeCount: result.message.like_count,
-                                viewCount: result.message.view_count,
-                                jsonInfo: JSON.stringify(result.message),
-                                createTime: new Date().toJSON(),
-                            })
+                            
+                            if (result.message && result.message.title) {
+                                this.getSortFormatList(this.videoInfo.formats)
+                                
+                                return DBVideos.insert({
+                                    _id: 'youtube_' + tempVideoId,
+                                    youtubeId: tempVideoId,
+                                    url: this.videoForm.videoUrl,
+                                    title: result.message.title,
+                                    fullTitle: result.message.fulltitle,
+                                    displayId: result.message.display_id,
+                                    duration: result.message.duration,
+                                    thumbnail: result.message.thumbnail,
+                                    webPageUrl: result.message.webpage_url,
+                                    uploadDate: result.message.upload_date,
+                                    uploader: result.message.uploader,
+                                    uploaderId: result.message.uploader_id,
+                                    uploaderUrl: result.message.uploader_url,
+                                    channelId: result.message.channel_id,
+                                    channelUrl: result.message.channel_url,
+                                    categories: result.message.categories,
+                                    tags: result.message.tags,
+                                    description: result.message.description,
+                                    dislikeCount: result.message.dislike_count,
+                                    likeCount: result.message.like_count,
+                                    viewCount: result.message.view_count,
+                                    jsonInfo: JSON.stringify(result.message),
+                                    createTime: new Date().toJSON(),
+                                })
+                            } else {
+                                return result
+                            }
+                            
                         }).then((doc) => {
                             console.log('Doc Saved: ', doc)
                         }).catch(httpErrorHandler)
