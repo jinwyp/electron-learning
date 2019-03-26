@@ -273,6 +273,11 @@ export default {
                 }).then((doc) => {
                     console.log('Doc Saved: ', doc)
                     this.getIsDownloadLogs(tempVideoId)
+                    this.$notify.success({
+                        title: '操作成功!',
+                        message: '',
+                        duration: notifyDuration,
+                    })
                 }).catch(httpErrorHandler)
             }
 
