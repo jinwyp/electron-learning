@@ -9,6 +9,9 @@
                 <ul class="menu top-menu">
                     <li @click="selectMenu('/audios')"> <mo-icon name="menu-task" width="20" height="20" /></li>
                     <li @click="selectMenu('/audios/create')"> <mo-icon name="menu-add" width="20" height="20" /></li>
+
+                    <li @click="selectMenu('/videos')"> <mo-icon name="menu-task" width="20" height="20" /></li>
+                    <li @click="selectMenu('/videos/create')"> <mo-icon name="menu-add" width="20" height="20" /></li>
                 </ul>
                 
                 <ul class="menu bottom-menu">
