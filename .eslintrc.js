@@ -15,20 +15,14 @@ module.exports = {
         "no-multiple-empty-lines": ["error", { "max": 6, "maxEOF": 2 }],
         "no-trailing-spaces": ["error", { "skipBlankLines": true }],
 
-        
+
+
+
         "vue/html-indent": ["error", 4, {
             "attribute": 1,
             "closeBracket": 0,
             "alignAttributesVertically": true,
             "ignores": []
-        }],
-
-        "vue/max-attributes-per-line": [10, {
-            "singleline": 10,
-            "multiline": {
-                "max": 10,
-                "allowFirstLine": true
-            }
         }],
 
         "vue/html-self-closing": ["error", {
@@ -45,6 +39,18 @@ module.exports = {
             "singleline": "never",
             "multiline": "never"
         }],
+        
+        "vue/max-attributes-per-line": [10, {
+            "singleline": 10,
+            "multiline": {
+                "max": 10,
+                "allowFirstLine": true
+            }
+        }],
+
+        "vue/name-property-casing": ["off", "PascalCase"],
+
+
 
         "vue/singleline-html-element-content-newline": ["off", {
             "ignoreWhenNoAttributes": true,

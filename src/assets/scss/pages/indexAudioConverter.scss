@@ -1,0 +1,352 @@
+
+/* VENDOR - Default fall-backs and external files.
+========================================================================== */
+
+
+@import '~normalize.css/normalize.css';
+@import '../theme/_variables.scss';
+@import "~element-ui/packages/theme-chalk/src/index";
+
+
+/* BASE - Base Variable file along with starting point Mixins and Placeholders.
+========================================================================== */
+
+
+@import "../helpers/_atom.scss";
+
+
+
+:root {
+    --app-background: '';
+    --aside-background: '';
+    --aside-text-color: '';
+    --subnav-background: '';
+    --subnav-title-color: '';
+    --subnav-text-color: '';
+    --subnav-active-text-color: '';
+    --panel-background: '';
+    --panel-title-color: '';
+    --panel-border-color: '';
+    --task-item-border-color: '';
+    --task-item-hover-border-color: '';
+    --task-item-hover-background: '';
+    --speedometer-background: '';
+    --speedometer-border-color: '';
+    --speedometer-hover-border-color: '';
+    --speedometer-primary-color: '';
+    --speedometer-text-color: '';
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Monospaced Number', 'Chinese Quote', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-variant: tabular-nums;
+    
+}
+
+img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+.clearfix {
+    @include clearfix();
+}
+
+#app,
+#container {
+    height: 100%;
+    background-color: $--app-background;
+}
+
+.draggable {
+    -webkit-app-region: drag;
+    -webkit-user-select: none;
+}
+
+.el-progress-bar__inner {
+    transition: all 0.4s cubic-bezier(0.08, 0.82, 0.17, 1) 0s;
+}
+
+.el-progress--line.is-text {
+    .el-progress-bar__inner::before {
+        content: '';
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+        border-radius: 10px;
+        animation: mo-progress-active 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+    }
+}
+
+@keyframes mo-progress-active {
+    0% {
+        opacity: 0.1;
+        width: 0;
+    }
+    20% {
+        opacity: 0.5;
+        width: 0;
+    }
+    100% {
+        opacity: 0;
+        width: 100%;
+    }
+}
+
+.el-message-box__wrapper {
+    outline: none;
+}
+
+.el-message__content {
+    line-height: 18px;
+    word-break: break-all;
+}
+
+
+
+.el-form-item--mini .el-form-item__info {
+    padding-top: 1px;
+}
+
+.el-form-item__info {
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 4px;
+    color: $--color-info;
+}
+
+
+
+.tab-title-dialog {
+    .el-dialog__header {
+        padding: 0 20px;
+        position: relative;
+        z-index: 10;
+    }
+    .el-dialog__body {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+
+
+.title-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 36px;
+    z-index: 5000;
+
+    .title-bar-dragger {
+        flex: 1;
+        user-select: none;
+        -webkit-app-region: drag;
+        -webkit-user-select: none;
+    }
+
+    .window-actions {
+        opacity: 0.4;
+        transition: $--fade-transition;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        z-index: 5100;
+        > li {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 5px;
+            &:hover {
+                background-color: $--titlebar-actions-active-background;
+            }
+        }
+    }
+    &:hover {
+        .window-actions {
+            opacity: 1;
+        }
+    }
+}
+
+
+
+.audio-converter-box {
+    height: 100%;
+    
+
+    .aside {
+        background-color: $--aside-background;
+        color: $--aside-text-color;
+    }
+
+    .aside-inner {
+        display: flex;
+        height: 100%;
+        flex-flow: column;
+
+
+        .logo-mini {
+            margin: 40px 0 0 0;
+            padding: 0;
+            width: 100%;
+            > a {
+                display: block;
+                width: 28px;
+                height: 28px;
+                text-align: center;
+                font-size: 0;
+                padding: 2px;
+                margin: 0 auto;
+            }
+        }
+        
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            user-select: none;
+            cursor: default;
+            > li {
+                width: 32px;
+                height: 32px;
+                margin-top: 24px;
+                cursor: pointer;
+                border-radius: 16px;
+                transition: background-color 0.25s;
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.15);
+                }
+            }
+            svg {
+                padding: 6px;
+                color: #fff;
+            }
+        }
+        .top-menu {
+            flex: 1;
+        }
+        .bottom-menu {
+            margin-bottom: 24px;
+        }
+    }
+    
+    
+    .content {
+        padding: 0;
+    }
+
+    
+    
+
+    .subnav {
+        background-color: $--subnav-background;
+        color: $--subnav-text-color;
+    }
+
+    .subnav-inner {
+        margin-top: 44px;
+        padding: 0 16px;
+
+        h3 {
+            font-size: 16px;
+            color: $--subnav-title-color;
+            font-weight: normal;
+            line-height: 24px;
+            margin: 0 0 28px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            user-select: none;
+            cursor: default;
+
+            li {
+                margin-bottom: 8px;
+                padding: 8px 10px;
+                font-size: 14px;
+                line-height: 20px;
+                border-radius: 3px;
+                cursor: pointer;
+
+                i,
+                span {
+                    vertical-align: middle;
+                    display: inline-block;
+                }
+
+                &:hover,
+                &.active {
+                    background-color: #EAECF0;
+
+                    i,
+                    span,
+                    svg {
+                        color: $--subnav-active-text-color;
+                    }
+                }
+            }
+        }
+    }
+
+    .subnav-icon {
+        padding: 2px;
+        height: 16px;
+        margin-right: 12px;
+
+        svg {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    
+    
+    .panel {
+        background: $--panel-background;
+        
+        .panel-header {
+            position: relative;
+            padding: 44px 0 12px;
+            margin: 0 36px;
+            border-bottom: 2px solid $--panel-border-color;
+            h4 {
+                margin: 0;
+                color: $--panel-title-color;
+                font-size: 16px;
+                font-weight: normal;
+                line-height: 24px;
+            }
+        }
+        .panel-content {
+            position: relative;
+            padding: 16px 36px 24px;
+            height: 100%;
+        }
+    }
+    
+    
+
+    
+}
+

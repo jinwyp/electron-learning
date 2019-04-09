@@ -18,8 +18,9 @@ protocol.registerStandardSchemes(['app'], {secure: true})
 function createWindow() {
     // Create the browser window.  创建浏览器窗口。
     mainWindow = new BrowserWindow({
-        titleBarStyle: 'default',
+        titleBarStyle: 'hiddenInset', // hiddenInset default
         useContentSize: true,
+        show: false,
         width: 1024,
         height: 768
     })
@@ -27,15 +28,23 @@ function createWindow() {
     if (isDevelopment) {
         // Load the url of the dev server if in development mode
         mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-        if (!process.env.IS_TEST) mainWindow.webContents.openDevTools()
+        // if (!process.env.IS_TEST) mainWindow.webContents.openDevTools()
     } else {
         createProtocol('app')
         // Load the index.html when not in development
         // mainWindow.loadFile(pathIndex)
         mainWindow.loadURL('app://./index.html')
-        mainWindow.webContents.openDevTools()
+        // mainWindow.webContents.openDevTools()
     }
 
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show()
+
+        if (!process.env.IS_TEST) mainWindow.webContents.openDevTools()
+    })
+    
+   
+    
     mainWindow.on('closed', () => {
         // 取消引用 window 对象，如果你的应用支持多窗口的话，
         // 通常会把多个 window 对象存放在一个数组里面，

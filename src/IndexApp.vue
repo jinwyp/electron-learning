@@ -1,5 +1,5 @@
 <template>
-
+   
     <el-container class="main">
         <el-header height="40px">
             <el-row type="flex" justify="space-between">
@@ -7,8 +7,6 @@
                     
                     <div class="header-logo">
                         <img src="@/assets/images/youtube_logo2.png" alt="">
-                        
-                        
                     </div>
                     
                     <div class="header-text">下载器 </div>
