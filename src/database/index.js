@@ -1,3 +1,7 @@
+/**
+ * https://github.com/louischatriot/nedb/issues/531
+ * 数据库不生成本地文件问题
+ */
 
 import path from 'path'
 

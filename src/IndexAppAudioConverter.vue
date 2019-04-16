@@ -7,10 +7,10 @@
             <div class="aside-inner">
                 <mo-logo-mini />
                 <ul class="menu top-menu">
-                    <li @click="selectMenu('/audios')"> <mo-icon name="menu-task" width="20" height="20" /></li>
+                    <li @click="selectMenu('/audios')"> <mo-icon name="menu-task-audio" width="20" height="20" /></li>
                     <li @click="selectMenu('/audios/create')"> <mo-icon name="menu-add" width="20" height="20" /></li>
 
-                    <li @click="selectMenu('/videos')"> <mo-icon name="menu-task" width="20" height="20" /></li>
+                    <li @click="selectMenu('/videos')"> <mo-icon name="menu-task-video" width="22" height="22" /></li>
                     <li @click="selectMenu('/videos/create')"> <mo-icon name="menu-add" width="20" height="20" /></li>
                 </ul>
                 
@@ -23,10 +23,11 @@
 
 
         <el-container class="content panel" direction="horizontal">
+            <!--
             <el-aside width="200px" class="subnav">
                 2222222
             </el-aside>
-            
+            -->
             <el-container class="content panel" direction="vertical">
                 <el-header class="panel-header" height="84">
                     <h4>{{ $route.meta.title }}</h4>
@@ -52,6 +53,8 @@ import is from 'electron-is'
 import TitleBar from '@/components/native/TitleBar'
 import LogoMini from '@/components/logo/LogoMini'
 import '@/components/icons/menu-task'
+import '@/components/icons/menu-task-audio'
+import '@/components/icons/menu-task-video'
 import '@/components/icons/menu-add'
 import '@/components/icons/menu-preference'
 import '@/components/icons/menu-about'
