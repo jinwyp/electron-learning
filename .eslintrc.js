@@ -63,6 +63,15 @@ module.exports = {
             "ignores": ["pre", "textarea"]
         }],
 
+        "vue/multiline-html-element-content-newline": ["off", {
+            "ignoreWhenEmpty": true,
+            "ignores": ["pre", "textarea"]
+        }],
+
+        "vue/no-v-html": 'off',
+        "vue/require-default-prop": 'off',
+        
+
     },
     parserOptions: {
         parser: 'babel-eslint'
