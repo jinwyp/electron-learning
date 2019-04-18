@@ -13,10 +13,10 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
+    "cheerio": "^1.0.0-rc.3",
     "dayjs": "^1.8.11",
     "electron-is": "^3.0.0",
-    "element-ui": "^2.6.3",
+    "element-ui": "^2.7.2",
     "mkdirp": "^0.5.1",
     "nedb": "^1.8.0",
     "normalize.css": "^8.0.1",
@@ -25,15 +25,15 @@
     "thenify": "^3.3.0",
     "video.js": "^7.5.1",
     "vue": "^2.6.10",
-    "vue-router": "^3.0.2"
+    "vue-router": "^3.0.6"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.5.1",
-    "@vue/cli-plugin-eslint": "^3.5.1",
-    "@vue/cli-service": "^3.5.1",
+    "@vue/cli-plugin-babel": "^3.6.0",
+    "@vue/cli-plugin-eslint": "^3.6.0",
+    "@vue/cli-service": "^3.6.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "electron": "^4.1.4",
-    "eslint": "^5.15.3",
+    "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.2",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
