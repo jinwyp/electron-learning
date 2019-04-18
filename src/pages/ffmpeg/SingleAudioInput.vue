@@ -146,39 +146,41 @@ export default {
             
             // const savePath = this.savePath + '/' + this.audioForm.targetFormat
             
-            DBAudioConvertLogs.findOne({ _id: this.audioForm.originalFilePath }).then((doc) => {
-                console.log('Find Audio File Already Converted : ', doc)
+            DBAudioConvertLogs.findOne({ sourceFullPath: this.audioForm.originalFilePath }).then((doc) => {
                 if (doc && doc._id) {
-                    this.audioInfo = doc
-                    this.isShowLoading = false
+                    console.log('Find Audio File Already Converted : ', doc)
+                    this.$notify.success({
+                        title: '该音频之前已经被转换过!',
+                        message: '',
+                        duration: notifyDuration,
+                    })
                 } else {
                     console.log('New Audio Converted: ', this.audioForm.originalFilePath)
-
-                    convertAudioToMP3(this.audioForm.originalFilePath, this.audioForm.targetFilePath).then((result) => {
-                        this.audioInfo = result.message
-                        this.downloadError = result.error
-                        this.isShowLoading = false
-
-                        return DBAudioConvertLogs.insert({
-                            _id: result.message.sourceFullPath,
-                            sourceFullPath: result.message.sourceFullPath,
-                            sourceFilename: result.message.sourceFilename,
-                            sourceFileExt: result.message.sourceFileExt,
-                            targetFilename: result.message.targetFilename,
-                            targetFileExt: result.message.targetFileExt,
-                            targetFullPath: result.message.targetFullPath,
-
-                            createTime: new Date().toJSON(),
-                        })
-                    }).then((doc) => {
-                        console.log('Doc Saved: ', doc)
-                        this.$notify.success({
-                            title: '操作成功!',
-                            message: '',
-                            duration: notifyDuration,
-                        })
-                    }).catch(httpErrorHandler)
                 }
+
+                convertAudioToMP3(this.audioForm.originalFilePath, this.audioForm.targetFilePath).then((result) => {
+                    this.audioInfo = result.message
+                    this.downloadError = result.error
+                    this.isShowLoading = false
+
+                    return DBAudioConvertLogs.insert({
+                        sourceFullPath: result.message.sourceFullPath,
+                        sourceFilename: result.message.sourceFilename,
+                        sourceFileExt: result.message.sourceFileExt,
+                        targetFilename: result.message.targetFilename,
+                        targetFileExt: result.message.targetFileExt,
+                        targetFullPath: result.message.targetFullPath,
+
+                        createTime: new Date().toJSON(),
+                    })
+                }).then((doc) => {
+                    console.log('Doc Saved: ', doc)
+                    this.$notify.success({
+                        title: '操作成功!',
+                        message: '',
+                        duration: notifyDuration,
+                    })
+                }).catch(httpErrorHandler)
             }).catch(httpErrorHandler)
         },
         

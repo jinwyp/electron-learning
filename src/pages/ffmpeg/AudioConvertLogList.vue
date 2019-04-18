@@ -24,7 +24,7 @@
                     <template slot-scope="scope">
                         <span> {{ scope.row.sourceFilename }} </span>
                         <br>
-                        <span>( {{ scope.row._id }} )</span>
+                        <span>( {{ scope.row.sourceFullPath }} )</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="targetFilename" label="转换后文件">
@@ -34,8 +34,8 @@
                         <span>( {{ scope.row.targetFullPath }} )</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="targetFileExt" label="格式" width="50"> </el-table-column>
-                <el-table-column prop="createTime" label="转换时间" width="100"> </el-table-column>
+                <el-table-column prop="targetFileExt" label="格式" width="60"> </el-table-column>
+                <el-table-column prop="createTime" label="转换时间" width="110"> </el-table-column>
                 
                 <el-table-column prop="id" label="操作" width="120">
                     <template slot-scope="scope">
