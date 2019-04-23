@@ -17,12 +17,12 @@
                 </el-form-item>
                 <el-form-item v-if="preferenceBasicForm.useProxy">
                     <el-col class="form-item-sub" :span="16">
-                        <el-input v-model="preferenceBasicForm.proxyAddress" placeholder="[http://][USER:PASSWORD@]HOST[:PORT]" ></el-input>
+                        <el-input v-model="preferenceBasicForm.proxyAddress" placeholder="[http://][USER:PASSWORD@]HOST[:PORT]"></el-input>
                     </el-col>
                 </el-form-item>
                 
 
-                <el-form-item label="" class="form-one-line-multi">
+                <el-form-item>
                     <el-button type="primary" @click="submitForm('form')"> 保存并应用 </el-button>
                     <el-button @click="resetForm('form')"> 放弃 </el-button>
                 </el-form-item>
@@ -45,8 +45,6 @@ import { notifyDuration } from '../../utils/constant'
 
 import SelectDirectory from '../../components/native/SelectDirectory'
 
-// const { dialog } = require('electron').remote
-
 
 
 export default {
@@ -65,9 +63,9 @@ export default {
         return {
             
             preferenceBasicForm: {
-                savePath: appPath.downloads,
-                useProxy: false,
-                proxyAddress: 'socks5://127.0.0.1:1086/',
+                savePath: userConfig.get('savePath') || appPath.downloads,
+                useProxy: userConfig.get('useProxy') || false,
+                proxyAddress: userConfig.get('proxyAddress') || 'socks5://127.0.0.1:1086/',
             },
             
         }
@@ -76,10 +74,8 @@ export default {
         // `this` points to the vm instance
         // console.log('Vue Component created: ')
 
-        console.log('userConfig.get(proxyAddress:', userConfig.get('proxyAddress'))
-        this.preferenceBasicForm.savePath = userConfig.get('savePath') || appPath.downloads
-        this.preferenceBasicForm.useProxy = userConfig.get('useProxy') || false
-        this.preferenceBasicForm.proxyAddress = userConfig.get('proxyAddress') || ''
+        console.log('userConfig.proxyAddress:', userConfig.get('proxyAddress'))
+        console.log('userConfig.savePath:', userConfig.get('savePath'))
     },
     
     methods: {
@@ -114,6 +110,12 @@ export default {
                 userConfig.set('savePath', this.preferenceBasicForm.savePath)
                 userConfig.set('useProxy', this.preferenceBasicForm.useProxy)
                 userConfig.set('proxyAddress', this.preferenceBasicForm.proxyAddress)
+
+                this.$notify.success({
+                    title: '操作成功!',
+                    message: '',
+                    duration: notifyDuration,
+                })
             })
         },
         

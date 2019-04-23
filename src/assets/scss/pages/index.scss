@@ -104,7 +104,6 @@ body {
             vertical-align: top;
         }
     }
-    
 }
 
 .el-form--inline{
@@ -150,55 +149,3 @@ body {
 
 
 
-.form-one-line-multi {
-    .el-form-item__content {
-        //width: 600px;
-        
-        .el-input {
-            width: 500px
-        }
-    }
-}
-
-
-.card-video-info {
-    .el-card__header {
-        padding: 8px 10px;
-    }
-
-    .el-card__body {
-        padding: 8px 10px;
-    }
-    .main-info {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: flex-start;
-        
-        .image-box {
-            width: 200px;
-            
-            img {
-                width: 100%;
-            }
-        }
-        
-        .description {
-            padding: 10px;
-            span {
-                margin-right: 15px;
-                font-size: 14px;
-            }
-        }
-
-        .audio-info {
-            padding: 10px;
-            div {
-                margin-right: 15px;
-                font-size: 14px;
-            }
-        }
-        
-    }
-    
-}

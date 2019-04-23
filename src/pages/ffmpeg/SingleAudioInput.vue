@@ -1,22 +1,7 @@
 <template>
     <el-row>
         <el-col :span="24">
-            <el-form ref="form" :model="audioForm" label-width="140px">
-                <el-form-item label="选择要转换的文件:">
-                    <el-button type="primary" size="small" @click="openFile()">选择文件</el-button>
-                    
-                    <span> {{ audioForm.originalFilePath }} </span>
-                </el-form-item>
-                
-                <el-form-item label="转换后的格式:">
-                    <el-radio-group v-model="audioForm.targetFormat">
-                        <el-radio-button v-for="item in audioFormatList.slice(0, 6)" :key="item.id" :label="item.value"></el-radio-button>
-                    </el-radio-group>
-                    
-                    <el-select v-model="audioForm.targetFormat" placeholder="请选择">
-                        <el-option v-for="item in audioFormatList.slice(6)" :key="item.id" :label="item.value" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
+            <el-form ref="form" :model="audioForm" label-width="140px" size="small">
 
                 <el-form-item label="保存路径:">
                     <el-input v-model="audioForm.targetFilePath" placeholder="默认为源文件相同文件夹" :readonly="isMas()">
@@ -24,8 +9,29 @@
                     </el-input>
                 </el-form-item>
                 
+                
+                <el-form-item label="选择要转换的文件:">
+                    <el-button type="primary" @click="openFile()">选择文件</el-button>
+                    
+                    <span> {{ audioForm.originalFilePath }} </span>
+                </el-form-item>
+                
+                <el-form-item label="转换后的格式:">
+                    <el-radio-group v-model="audioForm.targetFormat">
+                        <el-radio-button v-for="item in audioFormatList" :key="item.id" :label="item.value"></el-radio-button>
+                    </el-radio-group>
+                    
+                    <!--
+                    <el-select v-model="audioForm.targetFormat" placeholder="请选择" >
+                        <el-option v-for="item in audioFormatList.slice(6)" :key="item.id" :label="item.value" :value="item.value"></el-option>
+                    </el-select>
+                    -->
+                    
+                </el-form-item>
+
+                
                 <el-form-item label="" class="form-one-line-multi">
-                    <el-button v-loading.fullscreen.lock="isShowLoading" type="primary" plain size="small" @click="onSubmit('info')">点击转换</el-button>
+                    <el-button v-loading.fullscreen.lock="isShowLoading" type="primary" plain @click="onSubmit('info')">点击转换</el-button>
                 </el-form-item>
             </el-form>
         </el-col>
@@ -50,6 +56,9 @@
 <script>
 
 import is from 'electron-is'
+import { appPath } from '../../utils/appConfig'
+import { userConfig } from '../../utils/fileSaveStore'
+
 import { convertAudioToMP3 } from '../../services/ffmpeg/ffmpeg'
 import { httpErrorHandler } from '../../services/httpErrorHandler'
 import { notifyDuration } from '../../utils/constant'
@@ -98,7 +107,7 @@ export default {
             audioForm: {
                 targetFormat: 'MP3',
                 originalFilePath: '',
-                targetFilePath: '',
+                targetFilePath: userConfig.get('savePath') || appPath.downloads,
             },
             
             audioInfo: {},

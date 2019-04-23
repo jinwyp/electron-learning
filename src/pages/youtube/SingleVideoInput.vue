@@ -1,14 +1,9 @@
 <template>
     <el-row>
         <el-col :span="24">
-            <el-form ref="form" :model="videoForm" label-width="100px">
+            <el-form ref="form" :model="videoForm" label-width="100px" size="small">
                 <el-form-item label="代理服务器:">
                     <el-input v-model="videoForm.socks5" placeholder="socks5://127.0.0.1:1086/" />
-                </el-form-item>
-                
-                <el-form-item label="视频地址:" class="form-one-line-multi">
-                    <el-input v-model="videoForm.videoUrl" />
-                    <el-button v-loading.fullscreen.lock="isShowLoading" class="ml-20" type="primary" plain size="small" @click="onSubmit('info')">获取视频信息</el-button>
                 </el-form-item>
 
                 <el-form-item label="保存路径:">
@@ -16,6 +11,14 @@
                         <tk-select-directory slot="append" v-model="videoForm.downloadSavePath" />
                     </el-input>
                 </el-form-item>
+                
+                <el-form-item label="视频地址:">
+                    <el-input v-model="videoForm.videoUrl" @blur="onSubmit('info')">
+                        <el-button slot="append" v-loading.fullscreen.lock="isShowLoading" type="primary" plain icon="el-icon-search" @click="onSubmit('info')">获取视频信息</el-button>
+                    </el-input>
+                </el-form-item>
+
+                
             </el-form>
         </el-col>
 
@@ -112,6 +115,7 @@
 
 import { notifyDuration } from '../../utils/constant'
 import { appPath } from '../../utils/appConfig'
+import { userConfig } from '../../utils/fileSaveStore'
 
 import { downloadVideo, getVideoInfo } from '../../services/youtube/youtube-dl'
 import { httpErrorHandler } from '../../services/httpErrorHandler'
@@ -143,8 +147,8 @@ export default {
             videoForm: {
                 videoUrl: '',
                 videoTitle: '',
-                socks5: 'socks5://127.0.0.1:1086/',
-                downloadSavePath: appPath.downloads,
+                socks5: userConfig.get('proxyAddress') || 'socks5://127.0.0.1:1086',
+                downloadSavePath: userConfig.get('savePath') || appPath.downloads,
             },
             
             youtubeDlOptions: {

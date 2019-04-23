@@ -34,7 +34,7 @@ const userConfig = new Store({
     defaults: {},
 })
 
-
+console.log('===== Init User Config userPreferenceConfig.json : ', userConfig.store)
 
 
 
