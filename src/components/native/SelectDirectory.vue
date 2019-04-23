@@ -1,5 +1,5 @@
 <template>
-    <el-button class="select-directory" @click.stop="onFolderClick">选择目录</el-button>
+    <el-button class="select-directory" icon="el-icon-tickets" @click.stop="onFolderClick">选择目录</el-button>
 </template>
 
 <script>

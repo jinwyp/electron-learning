@@ -328,7 +328,7 @@ img {
         .panel-header {
             position: relative;
             padding: 44px 0 12px;
-            margin: 0 36px;
+            margin: 0 20px;
             border-bottom: 2px solid $--panel-border-color;
             h4 {
                 margin: 0;
@@ -340,12 +340,40 @@ img {
         }
         .panel-content {
             position: relative;
-            padding: 16px 36px 24px;
+            padding: 16px 20px 24px;
             height: 100%;
         }
     }
-    
-    
+
+
+    .form-preference {
+        padding-right: 7%;
+        .el-switch__label {
+            font-weight: $--font-weight-secondary;
+            color: $--color-text-regular;
+        }
+        .el-form-item.el-form-item--mini {
+            margin-bottom: 24px;
+        }
+        .el-form-item__content {
+            color: $--color-text-regular;
+        }
+        .form-item-sub {
+            margin-bottom: 12px;
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+            a {
+                color: $--color-text-regular;
+                text-decoration: none;
+                &:hover {
+                    color: $--color-text-primary;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
 
     
 }

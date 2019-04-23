@@ -11,8 +11,7 @@ const remote = is.renderer() ? require('electron').remote : { app: {} }
 
 const appRootDir = path.dirname(remote.app.getAppPath())
 
-
-console.log('===== NODE_ENV  : ', process.env.NODE_ENV)
+console.log('===== NODE_ENV : ', process.env.NODE_ENV)
 console.log('===== App isPackaged : ', remote.app.isPackaged)
 console.log('===== App Path Dir:', appRootDir)
 

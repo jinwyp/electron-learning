@@ -15,7 +15,7 @@
                 </ul>
                 
                 <ul class="menu bottom-menu">
-                    <li> <mo-icon name="menu-preference" width="20" height="20" /></li>
+                    <li @click="selectMenu('/preference')"> <mo-icon name="menu-preference" width="20" height="20" /></li>
                     <li><mo-icon name="menu-about" width="20" height="20" /></li>
                 </ul>
             </div>

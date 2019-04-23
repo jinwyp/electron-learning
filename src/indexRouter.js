@@ -18,6 +18,9 @@ import SingleVideoInput from './pages/youtube/SingleVideoInput.vue'
 import AudioConvertLogList from './pages/ffmpeg/AudioConvertLogList.vue'
 import SingleAudioInput from './pages/ffmpeg/SingleAudioInput.vue'
 
+
+import Basic from './pages/preferences/Basic.vue'
+
 Vue.use(Router)
 
 
@@ -32,6 +35,10 @@ const routes = [
 
     { path: '/videos/create', name: 'createNewVideo', component: SingleVideoInput, meta: { title: '新增下载视频' }, props: { isCreate: true } },
     { path: '/videos/edit/:videoId', name: 'editVideo', component: SingleVideoInput, meta: { title: '编辑已下载视频' }, props: { isCreate: false } },
+    
+    
+    
+    { path: '/preference', name: 'preferenceBasic', component: Basic, meta: { title: '基本设置' } },
     
     
     { path: '/PageNotFound404', name: 'pageNotFound', component: Page404, meta: { title: '页面未找到' } },
