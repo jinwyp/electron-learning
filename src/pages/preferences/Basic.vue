@@ -120,7 +120,9 @@ export default {
         },
         
         resetForm (formName) {
-            // this.form = initialForm(this.$store.state.preference.config)
+            this.preferenceBasicForm.savePath = userConfig.get('savePath') || appPath.downloads
+            this.preferenceBasicForm.useProxy = userConfig.get('useProxy') || false
+            this.preferenceBasicForm.proxyAddress = userConfig.get('proxyAddress') || 'socks5://127.0.0.1:1086/'
         },
     },
 }

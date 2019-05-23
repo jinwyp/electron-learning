@@ -17,7 +17,7 @@
                 </el-form-item>
                 
                 <el-form-item label="转换后的格式:">
-                    <el-radio-group v-model="audioForm.targetFormat">
+                    <el-radio-group v-model="audioForm.targetFormat" size="mini">
                         <el-radio-button v-for="item in audioFormatList" :key="item.id" :label="item.value"></el-radio-button>
                     </el-radio-group>
                     
