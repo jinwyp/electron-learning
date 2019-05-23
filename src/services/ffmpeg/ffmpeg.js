@@ -65,7 +65,6 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, targetFormat, op
 
                 targetFileFullName,
             ]
-            
         } else if (targetFormat === 'AAC') {
             ffmpegOption = [
                 '-y',
@@ -81,7 +80,6 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, targetFormat, op
 
                 targetFileFullName,
             ]
-            
         } else if (targetFormat === 'FLAC') {
             ffmpegOption = [
                 '-y',
@@ -94,7 +92,6 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, targetFormat, op
 
                 targetFileFullName,
             ]
-            
         } else if (targetFormat === 'WAV') {
             ffmpegOption = [
                 '-y',
@@ -104,7 +101,6 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, targetFormat, op
 
                 targetFileFullName,
             ]
-
         } else {
             ffmpegOption = [
                 '-y',
