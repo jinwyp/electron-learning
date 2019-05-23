@@ -20,14 +20,16 @@ const networkOptions = [
 ]
 
 
-export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) => {
+export const convertAudioToMP3 = (sourceFilePath, targetFolder, targetFormat, options = {}) => {
     return new Promise(resolve => {
+        const targetFileFormat = targetFormat.toLowerCase()
+        
         const sourceFile = path.resolve(sourceFilePath)
         const sourceFileExt = path.extname(sourceFile)
         const sourceFileBasename = path.basename(sourceFile, sourceFileExt)
         const sourceFileFullName = path.basename(sourceFile)
         
-        const targetFileFullName = path.join(sourceFileBasename + '.mp3')
+        const targetFileFullName = path.join(sourceFileBasename + '.' + targetFileFormat)
         let targetFileFullPath = path.resolve(targetFolder)
         
         if (!targetFolder) {
@@ -35,7 +37,7 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
         }
 
         console.log('FFMPEG cmd Path: ', ffmpegPath)
-        console.log('FFMPEG To MP3 Input Info: ', sourceFilePath, targetFolder)
+        console.log('FFMPEG To ' + targetFormat + ' Input Info: ', sourceFilePath, targetFolder, targetFormat)
         
         console.log('Source Info: ', sourceFile, sourceFileBasename, sourceFileExt, sourceFileFullName, path.resolve('./'))
         console.log('Target Info: ', targetFileFullPath, targetFileFullName, path.join('./', targetFolder))
@@ -46,11 +48,12 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
         let error = []
         
         
-        const dl = spawn(
-            ffmpegPath,
-            [
+        let ffmpegOption = []
+        
+        if (targetFormat === 'MP3') {
+            ffmpegOption = [
                 '-y',
-                
+
                 '-i',
                 sourceFilePath,
 
@@ -61,7 +64,62 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
                 '320k',
 
                 targetFileFullName,
-            ],
+            ]
+            
+        } else if (targetFormat === 'AAC') {
+            ffmpegOption = [
+                '-y',
+
+                '-i',
+                sourceFilePath,
+
+                '-acodec',
+                'aac',
+
+                '-b:a',
+                '320k',
+
+                targetFileFullName,
+            ]
+            
+        } else if (targetFormat === 'FLAC') {
+            ffmpegOption = [
+                '-y',
+
+                '-i',
+                sourceFilePath,
+
+                '-acodec',
+                'flac',
+
+                targetFileFullName,
+            ]
+            
+        } else if (targetFormat === 'WAV') {
+            ffmpegOption = [
+                '-y',
+
+                '-i',
+                sourceFilePath,
+
+                targetFileFullName,
+            ]
+
+        } else {
+            ffmpegOption = [
+                '-y',
+
+                '-i',
+                sourceFilePath,
+
+                targetFileFullName,
+            ]
+        }
+        
+        
+        const dl = spawn(
+            ffmpegPath,
+            ffmpegOption,
             {
                 cwd: targetFileFullPath,
             }
@@ -69,12 +127,12 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
 
         dl.stdout.on('data', (data) => {
             message.push(data.toString())
-            console.log(`[FFMPEG converting To MP3]: ${data}`)
+            console.log(`[FFMPEG converting To ${targetFormat}]: ${data}`)
         })
 
         dl.stderr.on('data', data => {
             error.push(data.toString())
-            console.log('[FFMPEG converting To MP3 Error]:', data.toString())
+            console.log(`[FFMPEG converting To ${targetFormat} Error]:`, data.toString())
         })
 
         dl.on('close', (code) => {
@@ -85,7 +143,7 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, options = {}) =>
                 sourceFilename: sourceFileFullName,
                 sourceFileExt: sourceFileExt,
                 targetFilename: targetFileFullName,
-                targetFileExt: 'MP3',
+                targetFileExt: targetFileFormat,
                 targetFullPath: targetFileFullPath + '/' + targetFileFullName,
             }
             resolve({ code, message: fileInfo, error })

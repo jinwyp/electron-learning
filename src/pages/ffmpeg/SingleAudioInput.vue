@@ -167,7 +167,7 @@ export default {
                     console.log('New Audio Converted: ', this.audioForm.originalFilePath)
                 }
 
-                convertAudioToMP3(this.audioForm.originalFilePath, this.audioForm.targetFilePath).then((result) => {
+                convertAudioToMP3(this.audioForm.originalFilePath, this.audioForm.targetFilePath, this.audioForm.targetFormat).then((result) => {
                     this.audioInfo = result.message
                     this.downloadError = result.error
                     this.isShowLoading = false

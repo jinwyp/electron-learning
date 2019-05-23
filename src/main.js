@@ -8,7 +8,7 @@ import GlobalPlugin from './components/mixins/index'
 
 import Icon from './components/icons/Icon'
 
-import App from './IndexApp.vue'
+// import App from './IndexApp.vue'
 import App2 from './IndexAppAudioConverter.vue'
 import router from './indexRouter'
 
