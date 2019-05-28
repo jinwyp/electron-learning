@@ -10,7 +10,7 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 </div>
 
 
-## INSTALLATION On Mac / 安装环境 Mac 
+# INSTALLATION On Mac / 安装环境 Mac 
 1. Mac 上安装 youtube-dl , 运行 ```brew install youtube-dl ``` 然后把 youtube-dl 可执行命令 复制到本项目的/resources/mac ``` cp /usr/local/bin/youtube-dl ./resources/mac ```
 2. Mac 上安装 ffmpeg 用来转换音频格式, 运行 ```brew install ffmpeg--with-libvpx ```  然后把 ffmpeg 可执行命令 复制到本项目的/resources/mac ``` cp /usr/local/bin/ffmpeg ./resources/mac ```
 
@@ -24,7 +24,7 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 
 
 
-## INSTALLATION On Windows / 安装环境 windows 
+# INSTALLATION On Windows / 安装环境 windows 
 
 1. 下载 FFmpeg, 通过 https://ffmpeg.zeranoe.com/builds/ 下载对应版本.  然后把 ffmpeg 可执行命令 复制到本项目的/resources/win下
 2. 下载 youtube-dl.exe 通过 https://youtube-dl.org/ 下载对应版本. 然后把 youtube-dl.exe 可执行命令 复制到本项目的/resources/win下
@@ -32,17 +32,26 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 3. 其他步骤同Mac环境, 安装node 和 npm等
 
 
-## How to Build / 打包编译 
+# How to Build / 打包编译 
 
 1. 运行 ```npm run electron:build```  打包编译, 最后生成在dist_electron 下
 
 
-## Electron Tutorial / 快速入门 教程
+
+# File structure / 文件结构
+
+1. Entry file 入口文件为 src/background.js, 此为electron 主进程文件. 在package.json可以修改该入口文件.
+2. src/background.js 运行后启动 public/index.html,  进入页面后启动 src/main.js  即Vue的第一个js文件.
+3. src/main.js 调用IndexApp.vue组件 运行Vue的第一个组件.
+
+
+
+# Electron Tutorial / 快速入门 教程
 
 [Electron 快速入门](https://github.com/nodejh/nodejh.github.io/issues/39)
 
 
-## Resource / 相关资源
+# Resource / 相关资源
 
 [youtube-dl 下载youtube视频工具](https://github.com/rg3/youtube-dl)
 
@@ -55,10 +64,3 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 
 
 
-
-
-## File structure / 文件结构
-
-1. Entry file 入口文件为 src/background.js, 此为electron 主进程文件. 在package.json可以修改该入口文件.
-2. src/background.js 运行后启动 public/index.html,  进入页面后启动 src/main.js  即Vue的第一个js文件.
-3. src/main.js 调用IndexApp.vue组件 运行Vue的第一个组件.
