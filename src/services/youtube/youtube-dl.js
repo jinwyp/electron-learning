@@ -120,6 +120,7 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
             videoFormatOptions[1] = options.videoFormatOptions['--format']
         }
         
+        console.log('videoFormatOptions: ', videoFormatOptions)
         const dl = spawn(
             youtubeDlPath,
             [

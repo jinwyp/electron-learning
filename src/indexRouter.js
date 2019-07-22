@@ -30,8 +30,8 @@ const routes = [
     { path: '/audios/create', name: 'createNewAudio', component: SingleAudioInput, meta: { title: '新增转换音频' }, props: { isCreate: true } },
     { path: '/audios/edit/:audioId', name: 'editAudio', component: SingleAudioInput, meta: { title: '编辑已转换音频' }, props: { isCreate: false } },
     
-    { path: '/videos', name: 'videoList', component: VideoList, meta: { title: '已下载视频列表' } },
-    { path: '/videoDownloadLogs', name: 'videoDownloadLogs', component: VideoDownloadLogs, meta: { title: '已下载视频格式日志' }, props: true },
+    { path: '/videos', name: 'videoList', component: VideoList, meta: { title: '视频列表' } },
+    { path: '/videoDownloadLogs', name: 'videoDownloadLogs', component: VideoDownloadLogs, meta: { title: '已下载视频日志' }, props: true },
 
     { path: '/videos/create', name: 'createNewVideo', component: SingleVideoInput, meta: { title: '新增下载视频' }, props: { isCreate: true } },
     { path: '/videos/edit/:videoId', name: 'editVideo', component: SingleVideoInput, meta: { title: '编辑已下载视频' }, props: { isCreate: false } },

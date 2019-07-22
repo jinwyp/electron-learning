@@ -43,6 +43,12 @@
                         <span> 浏览量: {{ videoInfo.view_count | numberDisplay }} </span>
                         <span> 喜欢: {{ videoInfo.like_count | numberDisplay }} </span>
                         <span>不喜欢: {{ videoInfo.dislike_count | numberDisplay }} </span>
+                        
+                    </div>
+                    
+                    <div class="button-box">
+                        <el-button type="primary" plain size="mini" @click="onSubmit('download_best', '')">下载最佳画质</el-button>
+                        <el-button type="primary" plain size="mini" @click="onSubmit('download_bestaudio', '')">下载最佳音频</el-button>
                     </div>
                 </div>
 
@@ -51,23 +57,26 @@
                 </div>
 
                 <el-table :data="videoFormatList" :show-header="true" size="mini" border stripe>
-                    <el-table-column prop="ext" label="格式" width="210">
+                    <el-table-column prop="ext" label="格式" width="190">
                         <template slot-scope="scope">
-                            <span v-if="scope.row.vcodec === 'none' ">Audio {{ scope.row.ext }} - {{ scope.row.format_note }}</span>
-                            <span v-if="scope.row.vcodec !== 'none' ">Video {{ scope.row.format_note }} ({{ scope.row.width }}x{{ scope.row.height }}) .{{ scope.row.ext }}</span>
+                            <span v-if="scope.row.vcodec === 'none' ">{{ scope.row.ext }} - {{ scope.row.format_note }}</span>
+                            <span v-if="scope.row.vcodec !== 'none' ">{{ scope.row.format_note }} ({{ scope.row.width }}x{{ scope.row.height }}) .{{ scope.row.ext }}</span>
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="filesize" label="文件大小" sortable width="110">
+                    <el-table-column prop="filesize" label="文件大小" sortable width="100">
                         <template slot-scope="scope">
                             <span v-if="scope.row.vcodec === 'none' ">{{ scope.row.filesize | sizeDisplay }} </span>
                             <span v-if="scope.row.vcodec !== 'none' "> {{ scope.row.filesize | sizeDisplay }} </span>
                         </template>
                     </el-table-column>
+
+                    <el-table-column prop="format_id" label="ID" width="50"></el-table-column>
+                    
                     <el-table-column prop="ext" label="是否下载" width="80">
                         <template slot-scope="scope">
-                            <el-tag v-if="videoDownloadLogsObject['youtube_' + currentVideoId + '_' + scope.row.format_id]" type="success">已下载</el-tag>
-                            <el-tag v-if="!videoDownloadLogsObject['youtube_' + currentVideoId + '_' + scope.row.format_id]" type="warning">未下载</el-tag>
+                            <el-tag v-if="videoDownloadLogsObject[scope.row.format_id]" type="success">已下载</el-tag>
+                            <el-tag v-if="!videoDownloadLogsObject[scope.row.format_id]" type="warning">未下载</el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column prop="ext" label="操作" width="80">
@@ -113,6 +122,8 @@
 
 <script>
 
+// import Vue from 'vue'
+    
 import { notifyDuration } from '../../utils/constant'
 import { appPath } from '../../utils/appConfig'
 import { userConfig } from '../../utils/fileSaveStore'
@@ -163,9 +174,14 @@ export default {
 
             videoFormatList: [],
             videoInfo: {},
+            
             videoDownloadLogsObject: {},
             
-            
+            bestVideoFormatInfo: {},
+            bestAudioFormatInfo: {},
+            bestVideoIdAndAudioId: '',
+            bestVideoId: '',
+            bestAudioId: '',
         }
     },
     created: function () {
@@ -179,17 +195,17 @@ export default {
                 DBVideos.findOne({
                     _id: 'youtube_' + this.$route.params.videoId,
                 }).then((doc) => {
-                    console.log('Fetch DBVideos Edit doc: ', doc)
+                    console.log('Fetch Edited DBVideos doc: ', doc)
                     
                     if (doc && doc.displayId) {
                         this.videoInfo = JSON.parse(doc.jsonInfo)
+                        this.getBestId(this.videoInfo)
                         this.getSortFormatList(this.videoInfo.formats)
-                        
+                        this.getIsDownloadLogs(this.$route.params.videoId)
+                        console.log('Fetch Edited videoInfo doc: ', this.videoInfo)
                         this.videoForm.videoUrl = doc.webPageUrl
                     }
                 }).catch(httpErrorHandler)
-
-                this.getIsDownloadLogs(this.$route.params.videoId)
             }
         }
     },
@@ -197,25 +213,29 @@ export default {
     
     methods: {
         getIsDownloadLogs (videoId) {
-            this.videoDownloadLogsObject = {}
-
+            videoId = videoId || this.videoForm.videoId
             DBVideoDownloadLogs.find({
                 youtubeId: videoId,
             }).then((result) => {
                 console.log('当前视频已下载数据: ', videoId, result)
-
+                
                 if (Array.isArray(result)) {
                     result.forEach((item) => {
-                        this.$set(this.videoDownloadLogsObject, item._id, item.isDownload || false)
+                        this.$set(this.videoDownloadLogsObject, item.formatId, item.isDownload)
+                        // this.videoDownloadLogsObject[item.formatId] = item.isDownload
+
+                        console.log('item: ', item)
                     })
                 }
+
+                console.log('this.videoDownloadLogsObject: ', this.videoDownloadLogsObject)
             }).catch(httpErrorHandler)
         },
         
         
         onSubmit (type, formatData) {
             console.log('VideoForm: ', this.videoForm)
-            
+
             if (!this.GIsValidUrl(this.videoForm.videoUrl)) {
                 return this.$notify.error({
                     title: '请输入正确的网址!',
@@ -223,6 +243,21 @@ export default {
                     duration: notifyDuration,
                 })
             }
+
+
+            if (type === 'download_best') {
+                formatData = this.bestVideoFormatInfo
+                formatData.format_id = this.bestVideoId
+                formatData.bestVideoIdAndAudioId = this.bestVideoIdAndAudioId
+            }
+
+            if (type === 'download_bestaudio') {
+                formatData = this.bestAudioFormatInfo
+                formatData.format_id = this.bestAudioId
+            }
+
+            
+            console.log('VideoFormatData: ', formatData)
             
             this.isShowLoading = true
             
@@ -236,11 +271,16 @@ export default {
             }
             console.log('VideoId: ', tempVideoId, tempVideoIdIndex, this.youtubeDlOptions.videoFormatOptions)
             
-            if (type === 'download') {
+            if (type === 'download' || type === 'download_best' || type === 'download_bestaudio') {
                 let targetPath = savePath
                 if (formatData.format_id) {
-                    this.youtubeDlOptions.videoFormatOptions['--format'] = formatData.format_id
-                    targetPath = savePath + '/' + formatData.format_id
+                    if (type === 'download_best') {
+                        this.youtubeDlOptions.videoFormatOptions['--format'] = formatData.bestVideoIdAndAudioId
+                        targetPath = savePath + '/' + formatData.bestVideoIdAndAudioId
+                    } else {
+                        this.youtubeDlOptions.videoFormatOptions['--format'] = formatData.format_id
+                        targetPath = savePath + '/' + formatData.format_id
+                    }
                 }
                 
                 downloadVideo(this.videoForm.videoUrl, targetPath, this.youtubeDlOptions).then((result) => {
@@ -256,6 +296,7 @@ export default {
                             webPageUrl: this.videoInfo.webpage_url,
                             title: this.videoInfo.title,
                             formatId: formatData.format_id,
+                            bestVideoIdAndAudioId: formatData.bestVideoIdAndAudioId,
                             formatNote: formatData.format_note,
                             format: formatData.format,
                             ext: formatData.ext,
@@ -292,16 +333,17 @@ export default {
                     }
                 }).catch(httpErrorHandler)
             }
+            
 
             if (type === 'info') {
-                this.getIsDownloadLogs(tempVideoId)
-                
                 DBVideos.findOne({
                     _id: 'youtube_' + tempVideoId,
                 }).then((doc) => {
                     if (doc && doc.displayId) {
                         this.videoInfo = JSON.parse(doc.jsonInfo)
+                        this.getBestId(this.videoInfo)
                         this.getSortFormatList(this.videoInfo.formats)
+                        this.getIsDownloadLogs(tempVideoId)
                         this.isShowLoading = false
                     } else {
                         getVideoInfo(this.videoForm.videoUrl, savePath, this.youtubeDlOptions).then((result) => {
@@ -310,7 +352,9 @@ export default {
                             this.isShowLoading = false
                             
                             if (result.code === 0 && result.message && result.message.title) {
+                                this.getBestId(this.videoInfo)
                                 this.getSortFormatList(this.videoInfo.formats)
+                                this.getIsDownloadLogs(tempVideoId)
                                 
                                 DBVideos.insert({
                                     _id: 'youtube_' + tempVideoId,
@@ -375,6 +419,14 @@ export default {
                     } else {
                         tempVideoWithAudio.push(format)
                     }
+
+                    if (format.format_id === this.bestVideoId) {
+                        this.bestVideoFormatInfo = format
+                    }
+
+                    if (format.format_id === this.bestAudioId) {
+                        this.bestAudioFormatInfo = format
+                    }
                 })
 
                 const sortByFilenameAndSize = function (a, b) {
@@ -404,11 +456,34 @@ export default {
                     return a.ext < b.ext ? 1 : -1
                 })
                 
+                
+                if (this.bestVideoIdAndAudioId.indexOf('+') === -1) {
+                    this.bestAudioFormatInfo = tempAudio[0]
+                    this.bestAudioId = tempAudio[0].format_id
+                }
+                
                 this.videoFormatList = [...tempVideoWithAudio, ...tempVideo, ...tempAudio]
             }
         },
 
 
+        getBestId (videoInfo) {
+            let tempIdArray = []
+
+            if (videoInfo.format_id && videoInfo.format_id.indexOf('+') > -1) {
+                tempIdArray = videoInfo.format_id.split('+')
+
+                this.bestVideoId = tempIdArray[0]
+                this.bestAudioId = tempIdArray[1]
+                this.bestVideoIdAndAudioId = videoInfo.format_id
+            } else {
+                this.bestVideoId = videoInfo.format_id
+                this.bestVideoIdAndAudioId = videoInfo.format_id
+            }
+        },
     },
+    
+    
+    
 }
 </script>

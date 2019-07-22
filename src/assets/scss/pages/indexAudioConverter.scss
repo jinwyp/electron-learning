@@ -177,9 +177,16 @@ img {
         .description {
             padding: 10px;
             span {
-                margin-right: 15px;
+                margin-right: 18px;
+                margin-bottom: 10px;
+                display:inline-block;
                 font-size: 14px;
             }
+        }
+        
+        .button-box {
+            padding: 62px 10px 0px 0px;
+            width: 270px;
         }
 
         .audio-info {
