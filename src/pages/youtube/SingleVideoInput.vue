@@ -122,7 +122,6 @@
 
 <script>
 
-// import Vue from 'vue'
     
 import { notifyDuration } from '../../utils/constant'
 import { appPath } from '../../utils/appConfig'
@@ -217,18 +216,13 @@ export default {
             DBVideoDownloadLogs.find({
                 youtubeId: videoId,
             }).then((result) => {
-                console.log('当前视频已下载数据: ', videoId, result)
-                
                 if (Array.isArray(result)) {
                     result.forEach((item) => {
                         this.$set(this.videoDownloadLogsObject, item.formatId, item.isDownload)
-                        // this.videoDownloadLogsObject[item.formatId] = item.isDownload
-
-                        console.log('item: ', item)
                     })
                 }
 
-                console.log('this.videoDownloadLogsObject: ', this.videoDownloadLogsObject)
+                console.log('VideoDownloadLogsObject: ', this.videoDownloadLogsObject)
             }).catch(httpErrorHandler)
         },
         
@@ -256,7 +250,6 @@ export default {
                 formatData.format_id = this.bestAudioId
             }
 
-            
             console.log('VideoFormatData: ', formatData)
             
             this.isShowLoading = true
@@ -316,7 +309,7 @@ export default {
                             createTime: new Date().toJSON(),
                             isDownload: true,
                         }).then((doc) => {
-                            console.log('Doc Saved: ', doc)
+                            console.log('Download youtube Doc Saved: ', doc)
                             this.getIsDownloadLogs(tempVideoId)
                             this.$notify.success({
                                 title: '操作成功!',
@@ -381,7 +374,7 @@ export default {
                                     jsonInfo: JSON.stringify(result.message),
                                     createTime: new Date().toJSON(),
                                 }).then((doc) => {
-                                    console.log('Doc Saved: ', doc)
+                                    console.log('Video info Doc Saved: ', doc)
                                 }).catch(httpErrorHandler)
                             } else {
                                 this.$notify.error({
