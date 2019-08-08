@@ -16,18 +16,21 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 2. Convert any audio to mp3
 
 
-## Installation On Mac
+
+## Usage
+
+### Installation On Mac
 
 1. Download dmg file from [release page](https://github.com/jinwyp/electron-learning/releases)
 2. Extract to mac /Applications folder and run.
 
-## Installation On Windows
+### Installation On Windows
 
 1. Download exe file from [release page](https://github.com/jinwyp/electron-learning/releases)
 2. Run exe file, extract to any folder and run.
 
 
-## FAQ & Troubleshooting
+### FAQ & Troubleshooting
 
 1. YouElectron base on ffmpeg and youtube-dl,  as default ffmpeg and youtube-dl are included in the release package. For any reason, you can install ffmpeg and youtube-dl by yourself.
 2. On mac, run  ```brew install youtube-dl ``` After install youtube-dl, then copy youtube-dl file to YouElectron folder /resources/mac. ``` cp /usr/local/bin/youtube-dl ./resources/mac ```
@@ -37,25 +40,27 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 
 
 
-##  Mac下安装
+###  Mac下安装
 
 1. 在 [下载页面](https://github.com/jinwyp/electron-learning/releases) 下载 dmg 文件 
 2. 解压后复制到 /Applications 然后运行即可.
 
 
-## Windows 下安装
+### Windows 下安装
 
 1. 在 [下载页面](https://github.com/jinwyp/electron-learning/releases) 下载 exe 文件 
 2. 运行exe 解压到任意目录,  然后运行即可.
 
 
-## 问题解答
+### 问题解答
 
 1. 本软件依赖于ffmpeg和youtube-dl, 默认已经包括在程序中. 如遇到问题, 可以自己安装这两个软件.
 2. Mac 上安装 youtube-dl , 运行 ```brew install youtube-dl ``` 然后运行 ```which youtube-dl ``` 显示youtube-dl所在路径, 然后把 youtube-dl 可执行文件复制到本项目的/resources/mac ``` cp /usr/local/bin/youtube-dl ./resources/mac ```
 3. Mac 上安装 ffmpeg 用来转换音频格式, 运行 ```brew install ffmpeg--with-libvpx ```  然后把 ffmpeg 可执行文件复制到本项目的/resources/mac ``` cp /usr/local/bin/ffmpeg ./resources/mac ```
 4. 在 Windows 上下载 youtube-dl.exe 浏览器打开 [youtube-dl官方网站](https://youtube-dl.org/) 下载对应版本. 然后把 youtube-dl.exe 可执行文件复制到本项目的/resources/win下
 5. 在 Windows 上下载 FFmpeg, 浏览器打开 [FFmpeg官方网站](https://ffmpeg.zeranoe.com/builds/) 下载对应版本.  然后把 ffmpeg.exe 可执行文件复制到本项目的/resources/win下
+
+
 
 
 
@@ -135,12 +140,12 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 
 
 
-# Electron Tutorial / 快速入门 教程
+## Electron Tutorial / 快速入门 教程
 
 [Electron 快速入门](https://github.com/nodejh/nodejh.github.io/issues/39)
 
 
-# Resource / 相关资源
+## Resource / 相关资源
 
 [youtube-dl 下载youtube视频工具](https://github.com/rg3/youtube-dl)
 
