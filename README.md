@@ -40,6 +40,8 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 
 
 
+## Usage 使用方法
+
 ###  Mac下安装
 
 1. 在 [下载页面](https://github.com/jinwyp/electron-learning/releases) 下载 dmg 文件 
@@ -91,6 +93,10 @@ A cross platform tool. Download youtube videos and convert any audio to mp3 tool
 
 1. Run ```npm run electron:build```  to build, and all files package to dist_electron folder
 
+
+
+
+## Development 开发环境搭建
 
 
 ### 安装环境 Mac
