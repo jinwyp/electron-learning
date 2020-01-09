@@ -1,8 +1,8 @@
 'use strict'
 const path = require('path')
 import is from 'electron-is'
-import {app, protocol, Menu, shell, BrowserWindow} from 'electron'
-import {createProtocol, installVueDevtools} from 'vue-cli-plugin-electron-builder/lib'
+import {app, protocol, Menu, BrowserWindow} from 'electron'
+import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib'
 
 const pathIndex = path.join(__dirname, 'index.html')
 
@@ -12,8 +12,10 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null
 
-// Standard scheme must be registered before the app is ready
-protocol.registerStandardSchemes(['app'], {secure: true})
+
+// Scheme must be registered before the app is ready
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
+
 
 function createWindow() {
     // Create the browser window.  创建浏览器窗口。
@@ -22,7 +24,10 @@ function createWindow() {
         useContentSize: true,
         show: false,
         width: 1024,
-        height: 768
+        height: 768,
+        webPreferences: {
+            nodeIntegration: true
+        }
     })
     
     if (isDevelopment) {
@@ -170,7 +175,17 @@ app.on('activate', () => {
 app.on('ready', async () => {
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
-        await installVueDevtools()
+        // Devtools extensions are broken in Electron 6.0.0 and greater
+        // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/378 for more info
+        // Electron will not launch with Devtools extensions installed on Windows 10 with dark mode
+        // If you are not using Windows 10 dark mode, you may uncomment these lines
+        // In addition, if the linked issue is closed, you can upgrade electron and uncomment these lines
+        // try {
+        //   await installVueDevtools()
+        // } catch (e) {
+        //   console.error('Vue Devtools failed to install:', e.toString())
+        // }
+
     }
     createWindow()
 })
@@ -189,3 +204,4 @@ if (isDevelopment) {
         })
     }
 }
+
