@@ -1,6 +1,6 @@
 # YouElectron
 
-A cross platform tool. Download youtube videos and convert any audio to mp3 tool. Using electron and youtube-d
+Download youtube videos and convert any audio to mp3 tool For Mac and Windows. Using electron, ffmpeg and youtube-d.
 
 <div align="center">
 	<br>
