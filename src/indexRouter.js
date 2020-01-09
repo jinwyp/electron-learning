@@ -21,6 +21,15 @@ import SingleAudioInput from './pages/ffmpeg/SingleAudioInput.vue'
 
 import Basic from './pages/preferences/Basic.vue'
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location, onResolve, onReject) {
+    if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+    return originalPush.call(this, location).catch(err => {
+        console.log('===== Vue router error: ', err);
+        return err;
+    })
+}
+
 Vue.use(Router)
 
 

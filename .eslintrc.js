@@ -4,8 +4,7 @@ module.exports = {
         node: true
     },
     'extends': [
-        'plugin:vue/recommended',
-        '@vue/standard'
+        'plugin:vue/recommended'
     ],
     rules: {
         'no-console': process.env.NODE_ENV === 'production' ? 'off' : 'off',
