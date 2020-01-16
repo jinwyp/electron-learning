@@ -118,7 +118,7 @@ export const convertAudioToMP3 = (sourceFilePath, targetFolder, targetFormat, op
             ffmpegOption,
             {
                 cwd: targetFileFullPath,
-            }
+            },
         )
 
         dl.stdout.on('data', (data) => {
@@ -171,7 +171,7 @@ export const getAudioInfo = (url, targetFolder, options = {}) => {
             ],
             {
                 cwd: path.join('./', targetFolder),
-            }
+            },
         )
 
         dl.stdout.on('data', (data) => {

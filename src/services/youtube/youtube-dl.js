@@ -76,7 +76,7 @@ export const downloadSubtitles = (url, targetFolder = '', { lang = 'enUS', filen
             ],
             {
                 cwd: path.join('./', targetFolder),
-            }
+            },
         )
         dl.stderr.on('data', data => {
             console.log('[dl-sub]:', data.toString())
@@ -136,7 +136,7 @@ export const downloadVideo = (url, targetFolder, options = {}) => {
             ],
             {
                 cwd: targetFolder,
-            }
+            },
         )
 
         dl.stdout.on('data', (data) => {
@@ -188,7 +188,7 @@ export const getVideoInfo = (url, targetFolder, options = {}) => {
             ],
             {
                 cwd: targetFolder,
-            }
+            },
         )
 
         dl.stdout.on('data', (data) => {
