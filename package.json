@@ -1,6 +1,6 @@
 {
-    "name": "Youelectron",
-    "version": "0.5.0",
+    "name": "youtubedlgui",
+    "version": "0.6.0",
     "private": true,
     "description": "Youtube downloader and Audio converter wma to mp3",
     "author": "JinWYP",

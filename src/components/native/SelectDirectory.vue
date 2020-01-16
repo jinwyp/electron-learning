@@ -39,16 +39,18 @@ export default {
             */
             
             
-            dialog.showOpenDialog(options, (filePaths) => {
-                console.log('TkSelectDirectory Selected filePaths: ', filePaths)
-                
-                if (!filePaths) {
+            dialog.showOpenDialog(options).then( (result) => {
+                console.log('TkSelectDirectory Selected filePaths: ', result.filePaths)
+
+                if (!result.filePaths) {
                     return
                 }
-                const [path] = filePaths
-                
-                console.log('TkSelectDirectory Selected first Path: ', path)
+                const [path] = result.filePaths
+
+                console.log('TkSelectDirectory Selected first path: ', path)
                 self.$emit('selected', path)
+            }).catch(err => {
+                console.log('TkSelectDirectory Selected path error: ', err)
             })
         },
     },
