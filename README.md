@@ -73,7 +73,7 @@ Download youtube videos and convert any audio to mp3 tool For Mac and Windows. U
 ### Setting environment On Mac 
 
 1. Install node.js on Mac. Git Clone this project
-2. Enter project folder and  run ```npm install``` and ```npm install -g @vue/cli```
+2. Enter project folder and  run ```npm install``` and ```npm install -g @vue/cli``` and ``` vue add electron-builder ```
 3. On mac, run  ```brew install youtube-dl ``` After install youtube-dl, then copy youtube-dl file to YouElectron folder /resources/mac. ``` cp /usr/local/bin/youtube-dl ./resources/mac ```
 4. On mac, run ```brew install ffmpeg--with-libvpx ``` After install ffmpeg, then copy ffmpeg file to YouElectron folder /resources/mac. ``` cp /usr/local/bin/ffmpeg ./resources/mac ```
 5. Run ```npm run electron:serve```  To development .
@@ -102,7 +102,7 @@ Download youtube videos and convert any audio to mp3 tool For Mac and Windows. U
 ### 安装环境 Mac
 
 1. 安装node.js, git clone 该项目.
-2. 进入项目目录后, 运行 ```npm install``` 与  ```npm install -g @vue/cli```
+2. 进入项目目录后, 运行 ```npm install``` 与  ```npm install -g @vue/cli``` 与 ``` vue add electron-builder ```
 3. Mac 上安装 youtube-dl , 运行 ```brew install youtube-dl ``` 然后运行 ```which youtube-dl ``` 显示youtube-dl所在路径, 然后把 youtube-dl 可执行文件复制到本项目的/resources/mac ``` cp /usr/local/bin/youtube-dl ./resources/mac ```
 4. Mac 上安装 ffmpeg 用来转换音频格式, 运行 ```brew install ffmpeg--with-libvpx ```  然后把 ffmpeg 可执行文件复制到本项目的/resources/mac ``` cp /usr/local/bin/ffmpeg ./resources/mac ```
 5. 启动程序, 运行 ```npm run electron:serve``` 进入开发热更新环境.
